@@ -1,5 +1,5 @@
 # AMSpi
-Python class for controlling Arduino Motor Shield L293D from Raspberry Pi (using RPi.GPIO)
+Python class for controlling **A**rduino **M**otor **S**hield L293D from Raspberry **Pi** (using RPi.GPIO)
 
 ### Requirements
 - RPi.GPI, on Raspbian you can install it typing this command:
@@ -16,6 +16,7 @@ You can wire it up as I did. Just look at the colors :-]
 ```python
 from AMSpi import AMSpi
 
+# For BOARD pin numbering use AMSpi(True) otherwise BCM is used
 with AMSpi() as amspi:
     # Set PINs for controlling shift register (GPIO numbering)
     amspi.set_74HC595_pins(21, 20, 16)
