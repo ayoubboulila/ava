@@ -26,5 +26,8 @@ with AMSpi() as amspi:
     amspi.run_dc_motors([amspi.DC_Motor_1, amspi.DC_Motor_2, amspi.DC_Motor_3, amspi.DC_Motor_4])
 ```
 
+If you want to know more you can read my blog posts [part 1](http://blog.janlipovsky.cz/2016/03/robocar-arduino-motor-shield-with-raspberry-pi-part1.html), [part 2](http://blog.janlipovsky.cz/2016/03/robocar-arduino-motor-shield-with-raspberry-pi-part2.html).
+
+
 ### License
 This piece of code is licensed under The MIT License.
