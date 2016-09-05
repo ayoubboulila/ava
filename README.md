@@ -9,7 +9,8 @@ sudo aptitude install python3-rpi.gpio
 
 ### Connecting Arduino Motor Shield L293D to Raspberry Pi
 You can wire it up as I did. Just look at the colors :-]  
-![Wiring](http://janlipovsky.cz/wiring-2.jpg "Wiring Motor Shield with Raspberry Pi")
+(Update 09/2016: Fixed image of wiring - thanks to Maxime!)  
+![Wiring](http://janlipovsky.cz/wiring12.jpg "Wiring Motor Shield with Raspberry Pi")
 
 ### Example
  For complex example please have a look to *example.py* source code.   
