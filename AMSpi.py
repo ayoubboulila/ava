@@ -3,6 +3,7 @@
 # ---------------------------------------------
 # Project:  AMSpi class
 # Author:   Jan Lipovský, 2016
+#           Daniel Neumann, 2017
 # E-mail:   janlipovsky@gmail.com
 # Licence:  MIT
 # Description: Python class for controlling
@@ -32,10 +33,12 @@ class AMSpi:
     _DIR_SER = None
 
     # DC Motors states and settings
-    # pin - pin on which is DC Motor connected
-    # direction - list of numbers that set direction of motor (clockwise, counterclockwise, no spin)
-    # is_running - True if motor is running
+    # pin               - PIN on which is DC Motor connected
+    # direction         - List of numbers that set direction of motor (clockwise, counterclockwise, no spin)
+    # is_running        - True if motor is running
     # running_direction - Direction of the motor
+    # pwm_frequency     - Frequency of pulse-width modulation (pwm)
+    # pwm               - Un-/set pwm object
     _MOTORS = {
         DC_Motor_1: {"pin": None, "direction": [4, 8, 4 | 8], "is_running": False,
                         "running_direction": None, "pwm_frequency": 50, "pwm": None},
@@ -215,6 +218,7 @@ class AMSpi:
 
         :param int dc_motor: number of dc motor
         :param bool clockwise: True for clockwise False for counterclockwise
+        :param int speed: pwm duty cycle (range 0-100)
         :return: False in case of an ERROR, True if everything is OK
         :rtype bool
         """
@@ -233,7 +237,7 @@ class AMSpi:
         elif speed >= 0 and speed <= 100:
             self._MOTORS[dc_motor]["pwm"] = GPIO.PWM(self._MOTORS[dc_motor]["pin"],
                                                      self._MOTORS[dc_motor]["pwm_frequency"])
-            self._MOTORS[dc_motor]["pwm"].start(speed) # argument is duty cycle
+            self._MOTORS[dc_motor]["pwm"].start(speed)
         else:
             print("WARNING: Speed argument must be in range 0-100! " + str(speed) + " given.")
             return False
@@ -249,6 +253,7 @@ class AMSpi:
 
         :param list[int] dc_motors: list of dc motor numbers
         :param bool clockwise: True for clockwise, False for counterclockwise
+        :param int speed: pwm duty cycle (range 0-100)
         :return: False in case of an ERROR, True if everything is OK
         :rtype bool
         """
