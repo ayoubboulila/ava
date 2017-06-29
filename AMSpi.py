@@ -1,14 +1,12 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# ---------------------------------------------
-# Project:  AMSpi class
-# Author:   Jan Lipovský, 2016
-#           Daniel Neumann, 2017
-# E-mail:   janlipovsky@gmail.com
-# Licence:  MIT
-# Description: Python class for controlling
-# Arduino Motor Shield L293D from Raspberry Pi
-# ---------------------------------------------
+"""
+   AMSpi class - Python class for controlling Arduino Motor Shield L293D from Raspberry Pi
+
+.. Licence MIT
+.. codeauthor:: Jan Lipovský <janlipovsky@gmail.com>, janlipovsky.cz
+.. contributors: Daniel Neumann
+"""
 try:
     import RPi.GPIO as GPIO
 except RuntimeError:
@@ -19,7 +17,7 @@ except RuntimeError:
 class AMSpi:
     """
     Main class for controlling Arduino Motor Shield L293D
-    via Raspberry Pi GPIO
+    via Raspberry Pi GPIO using RPi.GPIO
     """
     # Motor numbering
     DC_Motor_1 = 1
@@ -41,13 +39,13 @@ class AMSpi:
     # pwm               - Un-/set pwm object
     _MOTORS = {
         DC_Motor_1: {"pin": None, "direction": [4, 8, 4 | 8], "is_running": False,
-                        "running_direction": None, "pwm_frequency": 50, "pwm": None},
+                     "running_direction": None, "pwm_frequency": 10, "pwm_duty_cycle": 100, "pwm": None},
         DC_Motor_2: {"pin": None, "direction": [2, 16, 2 | 16], "is_running": False,
-                        "running_direction": None, "pwm_frequency": 50, "pwm": None},
+                     "running_direction": None, "pwm_frequency": 10, "pwm_duty_cycle": 100, "pwm": None},
         DC_Motor_3: {"pin": None, "direction": [32, 128, 32 | 128], "is_running": False,
-                        "running_direction": None, "pwm_frequency": 50, "pwm": None},
+                     "running_direction": None, "pwm_frequency": 10, "pwm_duty_cycle": 100, "pwm": None},
         DC_Motor_4: {"pin": None, "direction": [1, 64, 1 | 64], "is_running": False,
-                        "running_direction": None, "pwm_frequency": 50, "pwm": None}
+                     "running_direction": None, "pwm_frequency": 10, "pwm_duty_cycle": 100, "pwm": None}
     }
 
     # indexes of motor direction list
@@ -60,7 +58,6 @@ class AMSpi:
         Initialize function for AMSpi class
 
         :param bool use_board: True if GPIO.BOARD numbering will be used
-        :return:
         """
         if use_board:
             GPIO.setmode(GPIO.BOARD)
@@ -74,8 +71,9 @@ class AMSpi:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         try:
-            self._shift_write(0)
-            self.stop_dc_motors([self.DC_Motor_1, self.DC_Motor_2, self.DC_Motor_3, self.DC_Motor_4])
+            if self._test_shift_pins():
+                self._shift_write(0)
+                self.stop_dc_motors([self.DC_Motor_1, self.DC_Motor_2, self.DC_Motor_3, self.DC_Motor_4])
             GPIO.cleanup()
         except RuntimeWarning:
             return True
@@ -84,8 +82,8 @@ class AMSpi:
         """
         Test if PINs of shift register were set
 
-        :return: bool True if test passed
-        :rtype bool
+        :return: True if test passed, False otherwise
+        :rtype: bool
         """
         if self._DIR_LATCH is None:
             return False
@@ -99,8 +97,8 @@ class AMSpi:
     def _shift_write(self, value):
         """
         Write given value to the shift register
+
         :param int value: value which you want to write to shift register
-        :return:
         """
         if self._test_shift_pins() is False:
             print("ERROR: PINs for shift register were not set properly.")
@@ -125,10 +123,10 @@ class AMSpi:
         """
         Set PINs used on Raspberry Pi to connect with 74HC595 module on
         Arduino Motor Shield
+
         :param int DIR_LATCH: LATCH PIN number
         :param int DIR_CLK: CLK PIN number
         :param int DIR_SER: SER  PIN number
-        :return:
         """
         self._DIR_LATCH = DIR_LATCH
         self._DIR_CLK = DIR_CLK
@@ -140,7 +138,7 @@ class AMSpi:
 
     def set_L293D_pins(self, PWM0A=None, PWM0B=None, PWM2A=None, PWM2B=None):
         """
-        Set PINs used on Raspberry Pi to connect with 74HC595 module on
+        Set PINs used on Raspberry Pi to connect with L293D module on
         Arduino Motor Shield
 
         :param int PWM0A: PWM0A PIN number
@@ -173,7 +171,7 @@ class AMSpi:
         :param int dc_motor: number of dc motor
         :param int directions_index: index to motor direction list
         :return: number for shift register, motors direction value
-        :rtype tuple
+        :rtype: tuple
         """
 
         direction_value = self._MOTORS[dc_motor]["direction"][directions_index]
@@ -186,31 +184,40 @@ class AMSpi:
 
         return all_motors_direction, direction_value
 
-    def set_pwm_frequency(self, frequencies):
+    def set_pwm_frequency(self, motors_freq):
         """
         Sets the pulse-width modulation (pwm) frequencies for each motor.
 
-        :param list of int: Values for pwm frequencies. Should be high enough to run smoothly, but
-                            too high values can cause RPi.GPIO to crash.
+        :param dict motors_freq: Motors and its values for pwm frequencies.
+        Should be high enough to run smoothly, but too high values can cause RPi.GPIO to crash.
+
+        Example: {AMSpi.DC_Motor_1: 50, AMSpi.DC_Motor_2: 50, AMSpi.DC_Motor_3: 50, AMSpi.DC_Motor_4: 50}
+        :raise: AssertionError
         """
-        if size(frequencies) is not size(self._MOTORS):
-            print("ERROR: Size of frequency list must be equal to size of motors ("+size(self._MOTORS)+")!")
-        else:
-            for i in range(0,size(frequencies)):
-                self._MOTORS[i]["pwm_frequency"] = frequencies[i]
+        assert all([True if x in self._MOTORS.keys() else False for x in motors_freq.keys()]), "Unknown Motor was set."
+
+        for motor in motors_freq.keys():
+            self._MOTORS[motor]["pwm_frequency"] = motors_freq[motor]
 
     def get_pwm_frequency(self):
         """
-        Returns the current list of pulse-width modulation (pwm) frequencies for each motor.
+        Returns the current pulse-width modulation (pwm) frequencies for each motor.
 
-        :return: Current pwm frequency for each motor as list.
-        :rtype list of int
+        :return: Current pwm frequency for each motor in dict.
+        :rtype: dict
         """
-        frequencies = []
-        for m in self._MOTORS:
-            frequencies += m["pwm_frequency"]
 
-        return frequencies
+        return {motor: self._MOTORS[motor]["pwm_frequency"] for motor in self._MOTORS.keys()}
+
+    def get_pwm_duty_cycle(self):
+        """
+        Returns the current duty cycle lengths for each motor.
+
+        :return: Length of duty cycle for each motor in dict.
+        :rtype: dict
+        """
+
+        return {motor: self._MOTORS[motor]["pwm_duty_cycle"] for motor in self._MOTORS.keys()}
 
     def run_dc_motor(self, dc_motor, clockwise=True, speed=None):
         """
@@ -220,7 +227,7 @@ class AMSpi:
         :param bool clockwise: True for clockwise False for counterclockwise
         :param int speed: pwm duty cycle (range 0-100)
         :return: False in case of an ERROR, True if everything is OK
-        :rtype bool
+        :rtype: bool
         """
         if self._MOTORS[dc_motor]["pin"] is None:
             print("WARNING: Pin for DC_Motor_{} is not set. Can not run motor.".format(dc_motor))
@@ -233,14 +240,26 @@ class AMSpi:
 
         # turn the motor on (if speed argument is not given then full speed, otherwise set pwm according to speed)
         if speed is None:
+            # stop PWM if was used before
+            if self._MOTORS[dc_motor]["pwm"] is not None:
+                # noinspection PyUnresolvedReferences
+                self._MOTORS[dc_motor]["pwm"].stop()
+                self._MOTORS[dc_motor]["pwm"] = None
+
             GPIO.output(self._MOTORS[dc_motor]["pin"], GPIO.HIGH)
-        elif speed >= 0 and speed <= 100:
-            self._MOTORS[dc_motor]["pwm"] = GPIO.PWM(self._MOTORS[dc_motor]["pin"],
-                                                     self._MOTORS[dc_motor]["pwm_frequency"])
-            self._MOTORS[dc_motor]["pwm"].start(speed)
+        elif 0 <= speed <= 100:
+            self._MOTORS[dc_motor]["pwm_duty_cycle"] = speed
+            if self._MOTORS[dc_motor]["pwm"] is None:
+                self._MOTORS[dc_motor]["pwm"] = GPIO.PWM(self._MOTORS[dc_motor]["pin"],
+                                                         self._MOTORS[dc_motor]["pwm_frequency"])
+                # noinspection PyUnresolvedReferences
+                self._MOTORS[dc_motor]["pwm"].start(self._MOTORS[dc_motor]["pwm_duty_cycle"])
+            else:
+                # noinspection PyUnresolvedReferences
+                self._MOTORS[dc_motor]["pwm"].ChangeDutyCycle(self._MOTORS[dc_motor]["pwm_duty_cycle"])
         else:
-            print("WARNING: Speed argument must be in range 0-100! " + str(speed) + " given.")
-            return False
+            print("WARNING: Speed argument must be in range 0-100! But %s given. "
+                  "Keeping previous setting (%s)." % (speed, self._MOTORS[dc_motor]["pwm_duty_cycle"]))
 
         self._MOTORS[dc_motor]["is_running"] = True
         self._MOTORS[dc_motor]["running_direction"] = direction_value
@@ -279,12 +298,12 @@ class AMSpi:
         if self._MOTORS[dc_motor]["pwm"] is None:
             GPIO.output(self._MOTORS[dc_motor]["pin"], GPIO.LOW)
         else:
+            # noinspection PyUnresolvedReferences
             self._MOTORS[dc_motor]["pwm"].stop()
             self._MOTORS[dc_motor]["pwm"] = None
 
         self._MOTORS[dc_motor]["is_running"] = False
         self._MOTORS[dc_motor]["running_direction"] = None
-
         return True
 
     def stop_dc_motors(self, dc_motors):
@@ -298,6 +317,4 @@ class AMSpi:
         for dc_motor in dc_motors:
             if not self.stop_dc_motor(dc_motor):
                 return False
-
         return True
-
