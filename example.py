@@ -3,6 +3,7 @@
 # ---------------------------------------------
 # Project:  AMSpi class
 # Author:   Jan Lipovský, 2016
+#           Daniel Neumann, 2017
 # E-mail:   janlipovsky@gmail.com
 # Licence:  MIT
 # Description: Example of usage ASMpi class
@@ -29,6 +30,14 @@ if __name__ == '__main__':
 
         print("GO: counterclockwise")
         amspi.run_dc_motors([amspi.DC_Motor_1, amspi.DC_Motor_2, amspi.DC_Motor_3, amspi.DC_Motor_4], clockwise=False)
+        time.sleep(2)
+
+        print("Stop")
+        amspi.stop_dc_motors([amspi.DC_Motor_1, amspi.DC_Motor_2, amspi.DC_Motor_3, amspi.DC_Motor_4])
+        time.sleep(1)
+
+        print("GO: clockwise with 50% of maximum speed")
+        amspi.run_dc_motors([amspi.DC_Motor_1, amspi.DC_Motor_2, amspi.DC_Motor_3, amspi.DC_Motor_4], speed=50)
         time.sleep(2)
 
         print("Stop")
