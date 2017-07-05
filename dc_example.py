@@ -1,13 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# ---------------------------------------------
-# Project:  AMSpi class
-# Author:   Jan Lipovský, 2016
-#           Daniel Neumann, 2017
-# E-mail:   janlipovsky@gmail.com
-# Licence:  MIT
-# Description: Example of usage ASMpi class
-# ---------------------------------------------
+"""
+   Servo Example - Example of usage ASMpi class
+
+.. Licence MIT
+.. codeauthor:: Jan Lipovský <janlipovsky@gmail.com>, janlipovsky.cz
+"""
 
 from AMSpi import AMSpi
 import time
