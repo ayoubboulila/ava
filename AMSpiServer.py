@@ -7,6 +7,7 @@ from flask import Flask, flash, redirect, render_template, request, session, abo
 import jinja2
 from AMSpi import AMSpi
 import time
+import config
 
 try:
     import RPi.GPIO as GPIO
@@ -122,7 +123,9 @@ def stop():
         cont.__exit__(None, None, None)
         return "NOTOK"
 
-
+@app.context_processor
+def inject_user():
+    return dict(URL=config.URL)
 
 
 

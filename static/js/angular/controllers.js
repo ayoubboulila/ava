@@ -1,7 +1,7 @@
 'use strict';
 
 /* Controllers */
-URL = "http://127.0.0.1"
+
 angular.module('PIRC.controllers', []).
   controller('mvtCtl', ['$scope', '$http', function($scope, $http) {
 	  $scope.msg="Hello";
@@ -9,6 +9,7 @@ angular.module('PIRC.controllers', []).
 	  $scope.forward = function(){
 		  
 		  console.log("forward");
+		  console.log(URL);
 		  
 		  $http({
 	            method:'POST',
