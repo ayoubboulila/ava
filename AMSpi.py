@@ -12,6 +12,8 @@ try:
 except RuntimeError:
     print("Error importing RPi.GPIO! This is probably because you need superuser privileges. "
           "You can achieve this by using 'sudo' to run your script")
+except Exception as ex:
+    print("exception")
 
 
 class AMSpi:
@@ -327,3 +329,30 @@ class AMSpi:
             if not self.stop_dc_motor(dc_motor):
                 return False
         return True
+    
+    def stop(self):
+        self.stop_dc_motors([self.DC_Motor_1, self.DC_Motor_2])
+        
+    
+    def go(self, speed=100):
+        self.run_dc_motor(self.DC_Motor_1, speed, clockwise=True)
+        self.run_dc_motor(self.DC_Motor_2, speed, clockwise=False)
+    
+    
+    def go_back(self, speed=100):
+        self.run_dc_motor(self.DC_Motor_1, speed, clockwise=False)
+        self.run_dc_motor(self.DC_Motor_2, speed, clockwise=True)
+    
+    
+    def turn_right(self, speed=100):
+        self.run_dc_motor(self.DC_Motor_1, speed, clockwise=False)
+        self.run_dc_motor(self.DC_Motor_2, speed, clockwise=False)
+    
+    
+    def turn_left(self, speed=100):
+        self.run_dc_motor(self.DC_Motor_1, speed, clockwise=True)
+        self.run_dc_motor(self.DC_Motor_2, speed, clockwise=True)
+        
+        
+        
+        

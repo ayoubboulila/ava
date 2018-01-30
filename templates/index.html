@@ -1,0 +1,145 @@
+{% extends "layout.html" %}
+{% block body %}
+
+
+
+
+
+<div class="row ">
+                        <!-- left column -->
+                        <div class="col-md-6">
+                            <!-- general form elements -->
+                            <div class="box box-primary" ng-controller="mvtCtl">
+                                <div class="box-header">
+                                    <h3 class="box-title">Manual Control </h3>
+                                </div><!-- /.box-header -->
+                                
+                                    <div class="box-body">
+<!--                                     {{'{{msg}}'}} -->
+                                     
+                                     <div class="btn-group-vertical">
+<!--                                      row 1 -->
+                                     <div style="margin-left: 33%;">
+                                     	<span></span>
+                                     	<a class="btn btn-app" style="background-color: #00c0ef; border-color: #00acd6; color: #fff;" ng-click="forward(); ">
+                                       		 <i class="fa fa-arrow-circle-up"></i> Forward
+                                    	</a>
+                                    	
+                                    	<span></span>
+                                     
+                                     </div>
+<!--                                      row2 -->
+									<div>
+									
+										<a class="btn btn-app" style="background-color: #00c0ef; border-color: #00acd6; color: #fff;" ng-click="turn_left(); ">
+                                       		 <i class="fa fa-arrow-circle-left"></i> Left
+                                    	</a>
+                                    	<a class="btn btn-app" style="background-color: #00c0ef; border-color: #00acd6; color: #fff;" ng-click="stop(); ">
+                                       		 <i class="fa fa-stop"></i> Stop
+                                    	</a>
+                                    	<a class="btn btn-app" style="background-color: #00c0ef; border-color: #00acd6; color: #fff;" ng-click="turn_right(); ">
+                                       		 <i class="fa fa-arrow-circle-right"></i> Right
+                                    	</a>
+									
+									</div>
+<!-- 									row3 -->
+									<div style="margin-left: 33%;">
+										<a class="btn btn-app" style="background-color: #00c0ef; border-color: #00acd6; color: #fff;" ng-click="back(); ">
+                                       		 <i class="fa fa-arrow-circle-down"></i> Backward
+                                    	</a>
+									
+									</div>
+                                     
+                                     </div>
+                                     
+                                        
+<!--                                     <div class="row"> -->
+<!--                                     <div class="col-md-1"> -->
+<!--                                     <a class="btn btn-app affix"> -->
+<!--                                         <i class="fa fa-arrow-circle-up"></i> Left -->
+<!--                                     </a> -->
+<!--                                     </div> -->
+                                    
+<!--                                     <div class="col-md-1"> -->
+<!--                                     <a class="btn btn-app affix"> -->
+<!--                                         <i class="fa fa-arrow-circle-up"></i> Stop -->
+<!--                                     </a> -->
+                                    
+<!--                                     </div> -->
+<!--                                     <div class="col-md-1"> -->
+<!--                                     <a class="btn btn-app affix"> -->
+<!--                                         <i class="fa fa-arrow-circle-up"></i> Right -->
+<!--                                     </a> -->
+<!--                                     </div> -->
+                                    
+<!--                                     </div>     -->
+                                    
+<!--                                     <div class="row"> -->
+<!--                                     <div class="col-md-1"></div> -->
+                                    
+<!--                                     <div class="col-md-1"> -->
+<!--                                     <a class="btn btn-app  affix"> -->
+<!--                                         <i class="fa fa-arrow-circle-up"></i> Backward -->
+<!--                                     </a> -->
+                                    
+<!--                                     </div> -->
+<!--                                     <div class="col-md-1"></div> -->
+                                    
+<!--                                     </div>     -->
+                                        
+                                        
+                                    </div><!-- /.box-body -->
+
+                                    <div class="box-footer">
+<!--                                         <button type="submit" class="btn btn-primary">Submit</button> -->
+                                    </div>
+                              
+                            </div><!-- /.box -->
+
+                            
+
+                           
+
+                        </div><!--/.col (left) -->
+                        
+                        
+                        <!-- right column -->
+                        <div class="col-md-6">
+                           
+                            <div class="box box-warning">
+                                <div class="box-header">
+                                    <h3 class="box-title">?</h3>
+                                </div>
+                                <div class="box-body">
+                                   
+										<img src="static/img/smilingpython.gif">
+
+
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        
+                        
+                    </div>   <!-- /.row -->
+
+
+
+
+
+ 
+<!-- <div class="block1"> -->
+<!-- <h1>Hello!</h1> -->
+<!--   <h2>Here is an interesting quote for you: </h2> -->
+<!--   <p> -->
+<!-- {{test}} -->
+
+<!--   </p> -->
+<!-- <img src="http://www.naturalprogramming.com/images/smilingpython.gif"> -->
+<!-- </div> -->
+
+
+
+
+{% endblock %}
