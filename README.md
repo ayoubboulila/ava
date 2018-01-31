@@ -32,3 +32,6 @@ If you want to know more you can read my blog posts [part 1](http://blog.janlipo
 
 ### License
 This piece of code is licensed under The MIT License.
+
+
+cc -o mytest dc_cont.c -lwiringPi
