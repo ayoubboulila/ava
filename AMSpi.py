@@ -8,11 +8,16 @@
 # Description: Python class for controlling
 # Arduino Motor Shield L293D from Raspberry Pi
 # ---------------------------------------------
+
+import traceback
 try:
     import RPi.GPIO as GPIO
 except RuntimeError:
     print("Error importing RPi.GPIO! This is probably because you need superuser privileges. "
           "You can achieve this by using 'sudo' to run your script")
+except Exception as ex:
+    print("exception in GPIO import")
+    traceback.print_exc()
 
 
 class AMSpi:
@@ -30,6 +35,7 @@ class AMSpi:
     _DIR_LATCH = None
     _DIR_CLK = None
     _DIR_SER = None
+    _DIR_EN = None
 
     # DC Motors states and settings
     # pin - pin on which is DC Motor connected
@@ -55,12 +61,17 @@ class AMSpi:
         :param bool use_board: True if GPIO.BOARD numbering will be used
         :return:
         """
-        if use_board:
-            GPIO.setmode(GPIO.BOARD)
-            print("PIN numbering: BOARD")
-        else:
-            GPIO.setmode(GPIO.BCM)
-            print("PIN numbering: BCM")
+        try:
+            
+            if use_board:
+                GPIO.setmode(GPIO.BOARD)
+                print("PIN numbering: BOARD")
+            else:
+                GPIO.setmode(GPIO.BCM)
+                print("PIN numbering: BCM")
+        except Exception as ex:
+            print("GPIO mode could not be set")
+            traceback.print_exc()
 
     def __enter__(self):
         return self
@@ -72,6 +83,16 @@ class AMSpi:
             GPIO.cleanup()
         except RuntimeWarning:
             return True
+    def clean_up(self):
+        try:
+            print("cleaning up pins")
+            self._shift_write(0)
+            self.stop_dc_motors([self.DC_Motor_1, self.DC_Motor_2, self.DC_Motor_3, self.DC_Motor_4])
+            GPIO.cleanup()
+            
+        except Exception as ex:
+            print("exception cleaning up pins")
+            traceback.print_exc()
 
     def _test_shift_pins(self):
         """
@@ -114,7 +135,7 @@ class AMSpi:
 
         GPIO.output(self._DIR_LATCH, GPIO.HIGH)
 
-    def set_74HC595_pins(self, DIR_LATCH, DIR_CLK, DIR_SER):
+    def set_74HC595_pins(self, DIR_LATCH, DIR_CLK, DIR_SER, DIR_EN=12):
         """
         Set PINs used on Raspberry Pi to connect with 74HC595 module on
         Arduino Motor Shield
@@ -126,10 +147,13 @@ class AMSpi:
         self._DIR_LATCH = DIR_LATCH
         self._DIR_CLK = DIR_CLK
         self._DIR_SER = DIR_SER
+        self._DIR_EN = DIR_EN
 
         GPIO.setup(self._DIR_LATCH, GPIO.OUT)
         GPIO.setup(self._DIR_CLK, GPIO.OUT)
         GPIO.setup(self._DIR_SER, GPIO.OUT)
+        GPIO.setup(self._DIR_EN, GPIO.OUT)
+        GPIO.output(self._DIR_EN, GPIO.LOW)
 
     def set_L293D_pins(self, PWM0A=None, PWM0B=None, PWM2A=None, PWM2B=None):
         """
@@ -225,7 +249,7 @@ class AMSpi:
         :rtype bool
         """
         if self._MOTORS[dc_motor]["pin"] is None:
-            # print("WARNING: Pin for DC_Motor_{} is not set. Stopping motor could not be done".format(dc_motor))
+            #print("WARNING: Pin for DC_Motor_{} is not set. Stopping motor could not be done".format(dc_motor))
             return False
 
         all_motors_direction, direction_value = self._get_motors_direction(dc_motor, self._stop)
@@ -249,3 +273,27 @@ class AMSpi:
             if not self.stop_dc_motor(dc_motor):
                 return False
         return True
+    
+    
+    def stop(self):
+        self.stop_dc_motors([self.DC_Motor_1, self.DC_Motor_2])
+         
+     
+    def go(self):
+        self.run_dc_motor(self.DC_Motor_1, clockwise=True)
+        self.run_dc_motor(self.DC_Motor_2, clockwise=False)
+     
+     
+    def go_back(self):
+        self.run_dc_motor(self.DC_Motor_1, clockwise=False)
+        self.run_dc_motor(self.DC_Motor_2, clockwise=True)
+     
+     
+    def turn_right(self):
+        self.run_dc_motor(self.DC_Motor_1, clockwise=False)
+        self.run_dc_motor(self.DC_Motor_2, clockwise=False)
+     
+     
+    def turn_left(self):
+        self.run_dc_motor(self.DC_Motor_1, clockwise=True)
+        self.run_dc_motor(self.DC_Motor_2, clockwise=True)
