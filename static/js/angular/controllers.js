@@ -13,7 +13,7 @@ angular.module('PIRC.controllers', []).
 		  
 		  $http({
 	            method:'POST',
-	            url:URL + ':5000/index/forward',
+	            url:URL + '/index/forward',
 	            headers: {
 	               'Content-Type': 'application/json;charset=utf-8'
 	            },
@@ -32,7 +32,7 @@ $scope.back = function(){
 		  
 		  $http({
 	            method:'POST',
-	            url:URL + ':5000/index/backword',
+	            url:URL + '/index/backword',
 	            headers: {
 	               'Content-Type': 'application/json;charset=utf-8'
 	            },
@@ -51,7 +51,7 @@ $scope.turn_left = function(){
 	  
 	  $http({
           method:'POST',
-          url:URL + ':5000/index/turn_left',
+          url:URL + '/index/turn_left',
           headers: {
              'Content-Type': 'application/json;charset=utf-8'
           },
@@ -71,7 +71,7 @@ $scope.turn_right = function(){
 	  
 	  $http({
           method:'POST',
-          url:URL + ':5000/index/turn_right',
+          url:URL + '/index/turn_right',
           headers: {
              'Content-Type': 'application/json;charset=utf-8'
           },
@@ -91,7 +91,7 @@ $scope.stop = function(){
 	  
 	  $http({
           method:'POST',
-          url:URL + ':5000/index/stop',
+          url:URL + '/index/stop',
           headers: {
              'Content-Type': 'application/json;charset=utf-8'
           },
