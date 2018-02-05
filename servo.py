@@ -37,7 +37,7 @@ class Servo:
     MAX_LEFT = None
     MAX_RIGHT = None
     
-    def __init__(self, use_board=False):
+    def __init__(self, UD_=13, LR_=19, use_board=False):
         """
         Initialize function for servo class
 
@@ -51,6 +51,9 @@ class Servo:
             else:
                 GPIO.setmode(GPIO.BCM)
                 print("PIN numbering: BCM")
+            
+            self._UD_ = UD_
+            self._LR_ = LR_
             
             GPIO.setup(self._UD_, GPIO.OUT)
             GPIO.setup(self._LR_, GPIO.OUT)
@@ -73,7 +76,13 @@ class Servo:
             GPIO.cleanup()
         except RuntimeWarning:
             return True
-    
+    def stop(self):
+        try:
+            self.PWM_UD.stop()
+            self.PWM_LR.stop()
+        except Exception as ex:
+            print("exception stopping the PWM")
+            traceback.print_exc()
     
     def clean_up(self):
         try:

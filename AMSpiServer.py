@@ -76,7 +76,7 @@ def forward():
 def backword():
     print("backword")
     try:
-        cont.go_back()
+        cont.go_back(70)
         return "OK"
     except Exception as ex:
         print("exception in backward")
@@ -91,7 +91,7 @@ def backword():
 def turn_left():
     print("turn_left")
     try:
-        cont.turn_left()
+        cont.turn_left(50)
         return "OK"
     except Exception as ex:
         print("exception in turn_left")
@@ -106,7 +106,7 @@ def turn_right():
     print("turn_right")
     
     try:
-        cont.turn_right()
+        cont.turn_right(50)
         return "OK"
     except Exception as ex:
         print("exception in turn_right")
