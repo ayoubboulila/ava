@@ -358,6 +358,7 @@ class AMSpi:
         
     
     def go(self, speed=100):
+<<<<<<< HEAD
         self.run_dc_motor(self.DC_Motor_1, False, speed)
         self.run_dc_motor(self.DC_Motor_2, True, speed)
     
@@ -375,6 +376,25 @@ class AMSpi:
     def turn_left(self, speed=100):
         self.run_dc_motor(self.DC_Motor_1, False, speed)
         self.run_dc_motor(self.DC_Motor_2, False, speed)
+=======
+        self.run_dc_motor(self.DC_Motor_1, True, speed)
+        self.run_dc_motor(self.DC_Motor_2, False, speed)
+    
+    
+    def go_back(self, speed=100):
+        self.run_dc_motor(self.DC_Motor_1, False, speed)
+        self.run_dc_motor(self.DC_Motor_2, True, speed)
+    
+    
+    def turn_right(self, speed=100):
+        self.run_dc_motor(self.DC_Motor_1, False, speed)
+        self.run_dc_motor(self.DC_Motor_2, False, speed)
+    
+    
+    def turn_left(self, speed=100):
+        self.run_dc_motor(self.DC_Motor_1, True, speed)
+        self.run_dc_motor(self.DC_Motor_2, True, speed)
+>>>>>>> 82c22df959ec6466a15d2071c02d3afe8dc153e3
         
         
         
