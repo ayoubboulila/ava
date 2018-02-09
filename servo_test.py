@@ -48,3 +48,5 @@ except Exception as ex:
     print("exception in main")
     traceback.print_exc()
     serv.clean_up()
+finally:
+    serv.clean_up()
