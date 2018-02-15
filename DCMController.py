@@ -97,7 +97,7 @@ def main():
                 action = data['action']
                 speed = int(data['speed'])
                 time_limit = 0
-                if data.has_key('time_limit'):
+                if 'time_limit' in data:
                     time_limit = int(data['time_limit'])
                 if not (dcm is None):            
                     execute_action(dcm, action, speed, time_limit)
