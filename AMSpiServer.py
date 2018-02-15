@@ -10,7 +10,8 @@ import time
 import config
 import redis
 import Logger
-
+import logging
+from logging.handlers import RotatingFileHandler
 
 app = Flask(__name__)
 log = Logger.RCLog('AMSpiServer')
@@ -153,7 +154,12 @@ def main():
     try:
         app.jinja_env.auto_reload = True
         app.config['TEMPLATES_AUTO_RELOAD'] = True
-        app.run(debug=True, host='0.0.0.0')
+        handler = RotatingFileHandler('AMSpiServer.log', maxBytes=10000, backupCount=1)
+        handler.setLevel(logging.DEBUG)
+        formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+        handler.setFormatter(formatter)
+        app.logger.addHandler(handler)
+        app.run(debug=False, host='0.0.0.0')
     except Exception as ex:
         log.error("Exception in Main flask server")
         log.error(ex, exc_info=True)
