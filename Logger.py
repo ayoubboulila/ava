@@ -13,7 +13,7 @@ def RCLog(name):
     logger.setLevel(logLevel)
     
     # create the formatter which will print time, loglevel and the message
-    formatter = logging.Formatter('%(asctime)s: %(levelname)s: %(message)s')
+    formatter = logging.Formatter('%(asctime)s: %(name)s - %(levelname)s: %(message)s')
     # create a handler to redirect the logs to a file in append mode with 1 backup and max size 1Mo
     
     file_handler = RotatingFileHandler('logs.log', 'a', 1000000, 1)
