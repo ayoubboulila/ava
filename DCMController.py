@@ -89,7 +89,7 @@ def main():
         dcm = init_dc_motors()
         while True:
             message = sub.get_message()
-            if message and not isinstance(message['data'], int):
+            if message and not isinstance(message['data'], int) and message['type'] == 'message':
                 log.debug(type(message['data']))
                 data = json.loads(message['data'].decode('utf-8'))
                 log.debug("DCMC: received data:")
