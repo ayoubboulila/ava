@@ -42,6 +42,17 @@ try:
     sleep(1)
     
     
+    print("calibrating Neutral")
+    serv.set_duty_cycle(serv.PWM_UD, 7.5)
+    sleep(0.5)
+    serv.set_duty_cycle(serv.PWM_LR, 7.5)
+    sleep(0.5)
+    
+    print("calibrate 90°")
+    serv.move_UD(90)
+    sleep(0.5)
+    serv.move_LR(90)
+    sleep(0.5)
     
     
 except Exception as ex:

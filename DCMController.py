@@ -8,7 +8,7 @@ Created on 14 FEB. 2018
 import redis
 from datetime import datetime
 import json
-from pprint import pprint
+#from pprint import pprint
 import ast
 from AMSpi import AMSpi
 import time
@@ -52,7 +52,7 @@ def execute_action(dcm, action, speed=100, time_limit=0):
             log.debug('stop')
             dcm.stop()
         elif action == 'exit':
-            log.debug('exit')
+            log.debug('exit: cleaning up used pins')
             dcm.stop()
             dcm.clean_up()
     except Exception as ex:
@@ -93,7 +93,7 @@ def main():
                 log.debug(type(message['data']))
                 data = json.loads(message['data'].decode('utf-8'))
                 log.debug("DCMC: received data:")
-                pprint(data)
+                log.debug(data)
                 action = data['action']
                 speed = int(data['speed'])
                 time_limit = 0

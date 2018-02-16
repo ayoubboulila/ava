@@ -107,7 +107,11 @@ class Servo:
         """
         return float(angle) / 10.0 + 2.5
     
+    def move_UD(self, angle):
+        self.set_duty_cycle(self._UD_, self.countAngle(angle))
     
+    def move_LR(self, angle):
+        self.set_duty_cycle(self._LR_, self.countAngle(angle))
     
     def move_up(self, angle):
         #self.PWM_UD

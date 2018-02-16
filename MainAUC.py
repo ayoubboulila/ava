@@ -12,6 +12,7 @@ import sys
 import os
 import Logger
 import DCMController, AMSpiServer
+import redis
 
 log = Logger.RCLog('MainAUC')
 class MyManager(SyncManager):
@@ -27,7 +28,8 @@ def run_DCMController():
     DCMController.main()
 def run_AMSpiServer():
     AMSpiServer.main()
-
+def run_ServosController():
+    pass
 
 
 
@@ -81,6 +83,9 @@ if __name__ == '__main__':
             process.join()
     except KeyboardInterrupt:
         log.error("AYB: caught KeyboardInterrupt, killing processes")
+        broker = redis.StrictRedis()
+        broker.publish('DCMC', '{"action": "exit",  "speed": "0", "time_limit": "0"}')
+        sleep(1)
         for process in processes:
             process.terminate()
         manager.shutdown() 
