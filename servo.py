@@ -4,6 +4,7 @@ Created on 5 feb. 2018
 @author: AYB
 '''
 import traceback
+from time import sleep
 
 try:
     import RPi.GPIO as GPIO
@@ -32,10 +33,14 @@ class Servo:
     FREQ = 50
     PWM_UD = None
     PWM_LR = None
-    MAX_UP = None
-    MAX_DOWN = None
-    MAX_LEFT = None
-    MAX_RIGHT = None
+    MAX_UP = 10.5
+    MAX_DOWN = 7
+    MAX_LEFT = 2.5
+    MAX_RIGHT = 10.5
+    NEUTRAL_Y = 8.5
+    NEUTRAL_X = 7
+    CURRENT_UD = 8.5
+    CURRENT_LR = 7
     
     def __init__(self, UD_=13, LR_=19, use_board=False):
         """
@@ -59,8 +64,8 @@ class Servo:
             GPIO.setup(self._LR_, GPIO.OUT)
             self.PWM_UD = GPIO.PWM(self._UD_, self.FREQ)
             self.PWM_LR = GPIO.PWM(self._LR_, self.FREQ)
-            self.PWM_UD.start(0)
-            self.PWM_LR.start(0)
+            self.PWM_UD.start(self.CURRENT_UD)
+            self.PWM_LR.start(self.CURRENT_LR)
             
         except Exception as ex:
             print("GPIO could not be set")
@@ -98,8 +103,10 @@ class Servo:
     def set_duty_cycle(self, pwm, cycle):
         try:
             pwm.ChangeDutyCycle(cycle)
+            
+            
         except Exception as ex:
-            print("exception")
+            print("exception in set_duty_cycle")
             
     def countAngle(self, angle):
         """
@@ -108,10 +115,23 @@ class Servo:
         return float(angle) / 10.0 + 2.5
     
     def move_UD(self, angle):
-        self.set_duty_cycle(self._UD_, self.countAngle(angle))
+        pwm = self.countAngle(angle)
+        if pwm >= self.MAX_DOWN and pwm <= self.MAX_UP:
+            self.set_duty_cycle(self._UD_, pwm)
+            self.CURRENT_UD = pwm
+        else:
+            self.set_duty_cycle(self._UD_, self.NEUTRAL_Y)
+            self.CURRENT_UD = self.NEUTRAL_Y
+        
     
     def move_LR(self, angle):
-        self.set_duty_cycle(self._LR_, self.countAngle(angle))
+        pwm = self.countAngle(angle)
+        if pwm >= self.MAX_LEFT and pwm <= self.MAX_RIGHT:
+            self.set_duty_cycle(self._LR_, pwm)
+            self.CURRENT_LR = pwm
+        else:
+            self.set_duty_cycle(self._LR_, self.NEUTRAL_X)
+            self.CURRENT_LR = self.NEUTRAL_X
     
     def move_up(self, angle):
         #self.PWM_UD

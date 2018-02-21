@@ -31,7 +31,8 @@ def run_AMSpiServer():
     AMSpiServer.main()
 def run_ServosController():
     pass
-
+def run_MainUC():
+    pass
 
 
 if __name__ == '__main__':
