@@ -12,6 +12,7 @@ import redis
 import Logger
 import logging
 from logging.handlers import RotatingFileHandler
+import json as js
 
 app = Flask(__name__)
 log = Logger.RCLog('AMSpiServer')
@@ -65,13 +66,16 @@ def index():
 def forward():
     log.debug("forward")
     try:
-        #cont.go(70)
-        json = '{"action": "go",  "speed": "100", "time_limit": "0"}'
+        speed = 100
+        data = js.loads(request.data.decode('utf-8'))
+        if data['speed']:
+            speed = int(data['speed'])
+            print(speed)
+        json = '{"action": "go",  "speed": "'+ str(speed) +'", "time_limit": "0"}'
         r.publish('DCMC', json)
         return "OK"
     except Exception as ex:
         log.error("exception in forward")
-        #cont.clean_up()
         log.error(ex, exc_info=True)
         return "NOTOK"
     
@@ -83,13 +87,16 @@ def forward():
 def backword():
     print("backword")
     try:
-        #cont.go_back(70)
-        json = '{"action": "back",  "speed": "100", "time_limit": "0"}'
+        speed = 100
+        data = js.loads(request.data.decode('utf-8'))
+        if data['speed']:
+            speed = int(data['speed'])
+            print(speed)
+        json = '{"action": "back",  "speed": "' + str(speed) + '", "time_limit": "0"}'
         r.publish('DCMC', json)
         return "OK"
     except Exception as ex:
         log.error("exception in backward")
-        #cont.clean_up()
         log.error(ex, exc_info=True)
         return "NOTOK"
     
@@ -100,13 +107,16 @@ def backword():
 def turn_left():
     print("turn_left")
     try:
-        #cont.turn_left(50)
-        json = '{"action": "left",  "speed": "80", "time_limit": "0"}'
+        speed = 100
+        data = js.loads(request.data.decode('utf-8'))
+        if data['speed']:
+            speed = int(data['speed'])
+            print(speed)
+        json = '{"action": "left",  "speed": "' + str(speed) + '", "time_limit": "0"}'
         r.publish('DCMC', json)
         return "OK"
     except Exception as ex:
         log.error("exception in turn_left")
-        #cont.clean_up()
         log.error(ex, exc_info=True)
         return "NOTOK"
     
@@ -117,13 +127,16 @@ def turn_right():
     print("turn_right")
     
     try:
-        #cont.turn_right(50)
-        json = '{"action": "right",  "speed": "80", "time_limit": "0"}'
+        speed = 100
+        data = js.loads(request.data.decode('utf-8'))
+        if data['speed']:
+            speed = int(data['speed'])
+            print(speed)
+        json = '{"action": "right",  "speed": "' + str(speed) + '", "time_limit": "0"}'
         r.publish('DCMC', json)
         return "OK"
     except Exception as ex:
         log.error("exception in turn_right")
-        #cont.clean_up()
         log.error(ex, exc_info=True)
         return "NOTOK"
 
@@ -135,15 +148,76 @@ def stop():
     print("stop")
     
     try:
-        #cont.stop()
+        
         json = '{"action": "stop",  "speed": "0", "time_limit": "0"}'
         r.publish('DCMC', json)
         return "OK"
     except Exception as ex:
         log.error("exception in stop")
-        #cont.clean_up()
         log.error(ex, exc_info=True)
         return "NOTOK"
+
+@app.route('/index/servo/up', methods=['POST'])
+def servo_up():
+    print("servo up")
+    try: 
+        json = '{"action": "up", "angle": "-1"}'
+        r.publish('SC', json)
+        return "OK"
+    except Exception as ex:
+        log.error("exception in servo_up")
+        log.error(ex, exc_info=True)
+        return "NOTOK"
+
+@app.route('/index/servo/down', methods=['POST'])
+def servo_down():
+    print("servo down")
+    try: 
+        json = '{"action": "down", "angle": "-1"}'
+        r.publish('SC', json)
+        return "OK"
+    except Exception as ex:
+        log.error("exception in servo_down")
+        log.error(ex, exc_info=True)
+        return "NOTOK"
+
+@app.route('/index/servo/left', methods=['POST'])
+def servo_left():
+    print("servo left")
+    try: 
+        json = '{"action": "left", "angle": "-1"}'
+        r.publish('SC', json)
+        return "OK"
+    except Exception as ex:
+        log.error("exception in servo_left")
+        log.error(ex, exc_info=True)
+        return "NOTOK"
+
+
+@app.route('/index/servo/right', methods=['POST'])
+def servo_right():
+    print("servo right")
+    try: 
+        json = '{"action": "right", "angle": "-1"}'
+        r.publish('SC', json)
+        return "OK"
+    except Exception as ex:
+        log.error("exception in servo_right")
+        log.error(ex, exc_info=True)
+        return "NOTOK"
+
+@app.route('/index/servo/init', methods=['POST'])
+def servo_init():
+    print("servo init")
+    try: 
+        json = '{"action": "dummy", "angle": "-1"}'
+        r.publish('SC', json)
+        return "OK"
+    except Exception as ex:
+        log.error("exception in servo_init")
+        log.error(ex, exc_info=True)
+        return "NOTOK"
+
 
 @app.context_processor
 def inject_user():

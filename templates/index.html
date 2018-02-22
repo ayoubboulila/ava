@@ -10,10 +10,88 @@ console.log("ip address of server: "+URL);
 
 
 
+<div class="row " ng-controller="cameraCtl">
+                        <!-- left column -->
+                         <div class="col-md-8">
+                           
+                            <div class="box box-warning">
+                                <div class="box-header">
+                                    <h3 class="box-title">Live Feed</h3>
+                                </div>
+                                <div class="box-body">
+                                   
+										
+
+
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        <!-- right column -->
+                        <div class="col-md-4">
+                           
+                            <div class="box box-warning">
+                                <div class="box-header">
+                                    <h3 class="box-title">Camera Control</h3>
+                                </div>
+                                <div class="box-body">
+                                   
+										 <div class="btn-group-vertical">
+			<!--                      row 1     -->
+                                     <div style="margin-left: 33%;">
+                                     	<span></span>
+                                     	<a class="btn btn-app" style="background-color: #00c0ef; border-color: #00acd6; color: #fff;" ng-click="servo_up(); ">
+                                       		 <i class="fa fa-arrow-circle-up"></i> UP
+                                    	</a>
+                                    	
+                                    	<span></span>
+                                     
+                                     </div>
+<!--                                      row2 -->
+									<div>
+									
+										<a class="btn btn-app" style="background-color: #00c0ef; border-color: #00acd6; color: #fff;" ng-click="servo_left(); ">
+                                       		 <i class="fa fa-arrow-circle-left"></i> Left
+                                    	</a>
+                                     	<a class="btn btn-app" style="background-color: #db3939; border-color: #fff; color: #fff;" ng-click="servo_neutral(); "> 
+                                        		<i class="fa fa-arrows"></i> Neutral 
+                                     	</a> 
+                                    	<a class="btn btn-app" style="background-color: #00c0ef; border-color: #00acd6; color: #fff;" ng-click="servo_right(); ">
+                                       		 <i class="fa fa-arrow-circle-right"></i> Right
+                                    	</a>
+									
+									</div>
+<!-- 									row3 -->
+									<div style="margin-left: 33%;">
+										<a class="btn btn-app" style="background-color: #00c0ef; border-color: #00acd6; color: #fff;" ng-click="servo_down(); ">
+                                       		 <i class="fa fa-arrow-circle-down"></i> Down
+                                    	</a>
+									
+									</div>
+                                     
+                                     </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        
+                        
+                    </div>   <!-- /.row -->
+
+
+
+
+
+
+
 
 <div class="row ">
                         <!-- left column -->
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <!-- general form elements -->
                             <div class="box box-primary" ng-controller="mvtCtl">
                                 <div class="box-header">
@@ -58,42 +136,45 @@ console.log("ip address of server: "+URL);
                                      
                                      </div>
                                      
-                                        
-<!--                                     <div class="row"> -->
-<!--                                     <div class="col-md-1"> -->
-<!--                                     <a class="btn btn-app affix"> -->
-<!--                                         <i class="fa fa-arrow-circle-up"></i> Left -->
-<!--                                     </a> -->
-<!--                                     </div> -->
-                                    
-<!--                                     <div class="col-md-1"> -->
-<!--                                     <a class="btn btn-app affix"> -->
-<!--                                         <i class="fa fa-arrow-circle-up"></i> Stop -->
-<!--                                     </a> -->
-                                    
-<!--                                     </div> -->
-<!--                                     <div class="col-md-1"> -->
-<!--                                     <a class="btn btn-app affix"> -->
-<!--                                         <i class="fa fa-arrow-circle-up"></i> Right -->
-<!--                                     </a> -->
-<!--                                     </div> -->
-                                    
-<!--                                     </div>     -->
-                                    
-<!--                                     <div class="row"> -->
-<!--                                     <div class="col-md-1"></div> -->
-                                    
-<!--                                     <div class="col-md-1"> -->
-<!--                                     <a class="btn btn-app  affix"> -->
-<!--                                         <i class="fa fa-arrow-circle-up"></i> Backward -->
-<!--                                     </a> -->
-                                    
-<!--                                     </div> -->
-<!--                                     <div class="col-md-1"></div> -->
-                                    
-<!--                                     </div>     -->
-                                        
-                                        
+                                     
+                                     
+                                     <div class="btn-group-vertical" style="margin-left: 20px;">
+<!--                                      <div class="col-sm-8"> -->
+<!--                                             <input id="dc_slider" type="text" name="range_5" value="" /> -->
+<!--                                      </div> -->
+<style>
+
+.acs-value{
+	background-color: #00c0ef !important;
+	border: 2px solid #1b67e3 !important;
+
+}
+
+.acs{
+	border-color: #69fffc !important;
+
+}
+.acs-indicator{
+	background-color: #14ebff !important;
+}
+
+</style>
+                                     <circular-slider class='my-slider'
+  													  shape='Half Circle'
+													  touch="true"
+													  animate='true'
+													  on-slide='onSlide'
+													  on-slide-end='onSlideEnd'
+													  borderWidth='0.2'
+													  min="0"
+													  max="100"
+													  value="value">
+													  {?value?}%
+													</circular-slider>
+                                     </div>
+                                     
+                                     
+                                     
                                     </div><!-- /.box-body -->
 
                                     <div class="box-footer">
@@ -110,7 +191,7 @@ console.log("ip address of server: "+URL);
                         
                         
                         <!-- right column -->
-                        <div class="col-md-6">
+                        <div class="col-md-8">
                            
                             <div class="box box-warning">
                                 <div class="box-header">

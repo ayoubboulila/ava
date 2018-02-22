@@ -132,7 +132,40 @@ class Servo:
         else:
             self.set_duty_cycle(self._LR_, self.NEUTRAL_X)
             self.CURRENT_LR = self.NEUTRAL_X
+    def transit_U(self):
+        pwm = self.CURRENT_UD + 0.5
+        if pwm >= self.MAX_DOWN and pwm <= self.MAX_UP:
+            self.set_duty_cycle(self._UD_, pwm)
+            self.CURRENT_UD = pwm
+        else:
+            self.set_duty_cycle(self._UD_, self.NEUTRAL_Y)
+            self.CURRENT_UD = self.NEUTRAL_Y
+    def transit_D(self):
+        pwm = self.CURRENT_UD - 0.5
+        if pwm >= self.MAX_DOWN and pwm <= self.MAX_UP:
+            self.set_duty_cycle(self._UD_, pwm)
+            self.CURRENT_UD = pwm
+        else:
+            self.set_duty_cycle(self._UD_, self.NEUTRAL_Y)
+            self.CURRENT_UD = self.NEUTRAL_Y
+    def transit_R(self):
+        pwm = self.CURRENT_LR + 0.5
+        if pwm >= self.MAX_LEFT and pwm <= self.MAX_RIGHT:
+            self.set_duty_cycle(self._LR_, pwm)
+            self.CURRENT_LR = pwm
+        else:
+            self.set_duty_cycle(self._LR_, self.NEUTRAL_X)
+            self.CURRENT_LR = self.NEUTRAL_X
+    def transit_L(self):
+        pwm = self.CURRENT_LR - 0.5
+        if pwm >= self.MAX_LEFT and pwm <= self.MAX_RIGHT:
+            self.set_duty_cycle(self._LR_, pwm)
+            self.CURRENT_LR = pwm
+        else:
+            self.set_duty_cycle(self._LR_, self.NEUTRAL_X)
+            self.CURRENT_LR = self.NEUTRAL_X
     
+                        
     def move_up(self, angle):
         #self.PWM_UD
         pass

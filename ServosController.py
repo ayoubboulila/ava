@@ -17,6 +17,11 @@ log = Logger.RCLog('ServosController')
 
 # json = '{"action": "moveX",  "angle": "-1"}'
 # json = '{"action": "moveY",  "angle": "-1"}'
+# json = '{"action": "up",  "angle": "-1"}'
+# json = '{"action": "down",  "angle": "-1"}'
+# json = '{"action": "left",  "angle": "-1"}'
+# json = '{"action": "right",  "angle": "-1"}'
+
 
 
 def execute_action(servo, action, angle):
@@ -26,10 +31,18 @@ def execute_action(servo, action, angle):
         servo.move_UD(angle)
     elif action == "moveY":
         servo.move_LR(angle)
+    elif action == "up":
+        servo.transit_U()
+    elif action == "down":
+        servo.transit_D()
+    elif action == "left":
+        servo.transit_L()
+    elif action == "right":
+        servo.transit_R()
     else:
         # wrong angle go neutral
-        servo.move_UD(0)
-        servo.move_LR(0)
+        servo.move_UD(servo.NEUTRAL_Y)
+        servo.move_LR(servo.NEUTRAL_X)
         pass
 
 
