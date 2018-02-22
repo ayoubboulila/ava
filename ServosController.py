@@ -21,29 +21,39 @@ log = Logger.RCLog('ServosController')
 # json = '{"action": "down",  "angle": "-1"}'
 # json = '{"action": "left",  "angle": "-1"}'
 # json = '{"action": "right",  "angle": "-1"}'
+# json = '{"action": "exit",  "angle": "-1"}'
 
 
 
 def execute_action(servo, action, angle):
-    # servo.move_UD
-    # servo.move_LR
-    if action == "moveX":
-        servo.move_UD(angle)
-    elif action == "moveY":
-        servo.move_LR(angle)
-    elif action == "up":
-        servo.transit_U()
-    elif action == "down":
-        servo.transit_D()
-    elif action == "left":
-        servo.transit_L()
-    elif action == "right":
-        servo.transit_R()
-    else:
-        # wrong angle go neutral
-        servo.move_UD(servo.NEUTRAL_Y)
-        servo.move_LR(servo.NEUTRAL_X)
-        pass
+    try:
+        
+        # servo.move_UD
+        # servo.move_LR
+        if action == "moveX":
+            servo.move_UD(angle)
+        elif action == "moveY":
+            servo.move_LR(angle)
+        elif action == "up":
+            servo.transit_U()
+        elif action == "down":
+            servo.transit_D()
+        elif action == "left":
+            servo.transit_L()
+        elif action == "right":
+            servo.transit_R()
+        elif action == 'exit':
+            log.debug('exit: cleaning up used pins')
+            servo.clean_up()
+        else:
+            # wrong angle go neutral
+            servo.move_UD(servo.NEUTRAL_Y)
+            servo.move_LR(servo.NEUTRAL_X)
+        
+    except Exception as ex:
+        log.error("exception in SC execute_action()")
+        log.error(ex, exc_info=True)
+        servo.clean_up()
 
 
 
