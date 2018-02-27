@@ -98,7 +98,7 @@ def main():
                 speed = int(data['speed'])
                 time_limit = 0
                 if 'time_limit' in data:
-                    time_limit = int(data['time_limit'])
+                    time_limit = float(data['time_limit'])
                 if not (dcm is None):            
                     execute_action(dcm, action, speed, time_limit)
                 else:

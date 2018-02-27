@@ -87,6 +87,7 @@ def main():
     except Exception as ex:
         log.error("exception in ServosController")
         log.error(ex, exc_info=True)
+        sc.clean_up()
         
 
 

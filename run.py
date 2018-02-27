@@ -95,6 +95,8 @@ if __name__ == '__main__':
         log.error("AYB: caught KeyboardInterrupt, killing processes")
         broker = redis.StrictRedis()
         broker.publish('DCMC', '{"action": "exit",  "speed": "0", "time_limit": "0"}')
+        broker.publish('SC', '{"action": "exit",  "angle": "-1"}')
+        broker.publish('US', '{"action": "exit", "distance": "0"}')
         sleep(1)
         for process in processes:
             process.terminate()
