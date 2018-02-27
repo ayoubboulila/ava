@@ -12,7 +12,7 @@ from time import sleep
 import sys
 import os
 import Logger
-import DCMController, AMSpiServer, ServosController
+import DCMController, AMSpiServer, ServosController, USController, MainAUC
 import redis
 
 log = Logger.RCLog('MainAUC')
@@ -33,9 +33,10 @@ def run_ServosController():
     ServosController.main()
 
 def run_USController():
-    pass
+    USController.main()
 def run_MainUC():
-    pass
+    MainAUC.main()
+    
 
 
 if __name__ == '__main__':
@@ -64,6 +65,16 @@ if __name__ == '__main__':
     ams_process.daemon = True
     ams_process.start()
     processes.append(ams_process)
+    #------------------------
+    usc_process = multiprocessing.Process(target=run_USController)
+    usc_process.daemon = True
+    usc_process.start()
+    processes.append(usc_process)
+    #------------------------
+    mauc_process = multiprocessing.Process(target=run_MainUC)
+    mauc_process.daemon = True
+    mauc_process.start()
+    processes.append(mauc_process)
     #===========================================================================
     # cam_process = multiprocessing.Process(target=cam_loop,args=(in_queue, ))
     # cam_process.daemon = True
