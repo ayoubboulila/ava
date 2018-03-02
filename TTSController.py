@@ -61,3 +61,8 @@ def main():
     except Exception as ex:
         log.error("error in TTSController")
         log.error(ex, exc_info=True)
+        
+        
+        
+if __name__ == "__main__":
+    main()   
