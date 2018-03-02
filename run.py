@@ -12,7 +12,7 @@ from time import sleep
 import sys
 import os
 import Logger
-import DCMController, AMSpiServer, ServosController, USController, MainAUC, AgentController
+import DCMController, AMSpiServer, ServosController, USController, MainAUC, AgentController, TTSController
 import redis
 
 log = Logger.RCLog('MainAUC')
@@ -38,6 +38,8 @@ def run_MainUC():
     MainAUC.main()
 def run_AgentController():
     AgentController.main()
+def run_TTSController():
+    TTSController.main()
 
 
 if __name__ == '__main__':
@@ -81,6 +83,11 @@ if __name__ == '__main__':
     ac_process.daemon = True
     ac_process.start()
     processes.append(ac_process)
+    #------------------------
+    ttsc_process = multiprocessing.Process(target=run_TTSController)
+    ttsc_process.daemon = True
+    ttsc_process.start()
+    processes.append(ttsc_process)
     #===========================================================================
     # cam_process = multiprocessing.Process(target=cam_loop,args=(in_queue, ))
     # cam_process.daemon = True
