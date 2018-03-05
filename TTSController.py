@@ -58,7 +58,7 @@ def main():
                 action = data['action']
                 sentence = data['sentence']
                 tts.speak(sentence)
-            sleep(0.2)
+            sleep(0.4)
                 
     except Exception as ex:
         log.error("error in TTSController")

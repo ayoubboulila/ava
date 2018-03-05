@@ -108,7 +108,7 @@ def main():
         # make sure you have the same numbers of callbacks and models
         detector.start(detected_callback=callbacks,
                        interrupt_check=interrupt_callback,
-                       sleep_time=0.07)
+                       sleep_time=0.1)
 
         detector.terminate()
         
