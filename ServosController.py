@@ -9,6 +9,7 @@ from datetime import datetime
 import json
 import ast
 import time
+from time import sleep
 import Logger
 from servo import Servo
 
@@ -83,6 +84,7 @@ def main():
                     execute_action(sc, action, angle)
                 else:
                     log.error("servos were not initialized not performing action!")
+            sleep(0.2)
             
     except Exception as ex:
         log.error("exception in ServosController")

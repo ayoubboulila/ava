@@ -11,6 +11,7 @@ import redis
 import Logger
 import subprocess
 import json
+from time import sleep
 
 
 # json =  '{"action": "speak",  "sentence": ""}'
@@ -57,6 +58,7 @@ def main():
                 action = data['action']
                 sentence = data['sentence']
                 tts.speak(sentence)
+            sleep(0.2)
                 
     except Exception as ex:
         log.error("error in TTSController")

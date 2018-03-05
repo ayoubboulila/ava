@@ -58,36 +58,43 @@ if __name__ == '__main__':
     dcmc_process.daemon = True
     dcmc_process.start()
     processes.append(dcmc_process)
+    sleep(0.4)
     #------------------------
     dsc_process = multiprocessing.Process(target=run_ServosController)
     dsc_process.daemon = True
     dsc_process.start()
     processes.append(dsc_process)
-    #------------------------
-    ams_process = multiprocessing.Process(target=run_AMSpiServer)
-    ams_process.daemon = True
-    ams_process.start()
-    processes.append(ams_process)
+    sleep(0.4)
     #------------------------
     usc_process = multiprocessing.Process(target=run_USController)
     usc_process.daemon = True
     usc_process.start()
     processes.append(usc_process)
+    sleep(0.4)
     #------------------------
     mauc_process = multiprocessing.Process(target=run_MainUC)
     mauc_process.daemon = True
     mauc_process.start()
     processes.append(mauc_process)
+    sleep(0.4)
+    #------------------------
+    ams_process = multiprocessing.Process(target=run_AMSpiServer)
+    ams_process.daemon = True
+    ams_process.start()
+    processes.append(ams_process)
+    sleep(0.6)
     #------------------------
     ac_process = multiprocessing.Process(target=run_AgentController)
     ac_process.daemon = True
     ac_process.start()
     processes.append(ac_process)
+    sleep(0.6)
     #------------------------
     ttsc_process = multiprocessing.Process(target=run_TTSController)
     ttsc_process.daemon = True
     ttsc_process.start()
     processes.append(ttsc_process)
+    sleep(0.6)
     #===========================================================================
     # cam_process = multiprocessing.Process(target=cam_loop,args=(in_queue, ))
     # cam_process.daemon = True

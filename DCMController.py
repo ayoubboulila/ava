@@ -12,6 +12,7 @@ import json
 import ast
 from AMSpi import AMSpi
 import time
+from time import sleep
 import Logger
 
 DCM_CH = 'DCMC'
@@ -103,6 +104,7 @@ def main():
                     execute_action(dcm, action, speed, time_limit)
                 else:
                     log.error("dcm was not initialized not performing action!")
+            sleep(0.2)
             
     except Exception as ex:
         log.error("exception in DCMController")

@@ -33,14 +33,14 @@ class Servo:
     FREQ = 50
     PWM_UD = None
     PWM_LR = None
-    MAX_UP = 10.5
-    MAX_DOWN = 7
-    MAX_LEFT = 2.5
-    MAX_RIGHT = 10.5
-    NEUTRAL_Y = 8.5
-    NEUTRAL_X = 7
-    CURRENT_UD = 8.5
-    CURRENT_LR = 7
+    MAX_UP = 9.5      # 50 degree
+    MAX_DOWN = 4.5    # 0 degree
+    MAX_LEFT = 4.5    # 0 degree
+    MAX_RIGHT = 9.5   # 50 degree
+    NEUTRAL_Y = 7.5   # 30 degree
+    NEUTRAL_X = 7.5   # 30 degree
+    CURRENT_UD = 7.5
+    CURRENT_LR = 7.5
     
     def __init__(self, UD_=13, LR_=19, use_board=False):
         """
@@ -66,6 +66,9 @@ class Servo:
             self.PWM_LR = GPIO.PWM(self._LR_, self.FREQ)
             self.PWM_UD.start(self.CURRENT_UD)
             self.PWM_LR.start(self.CURRENT_LR)
+            sleep(1)
+            self.PWM_UD.stop()
+            self.PWM_LR.stop()
             
         except Exception as ex:
             print("GPIO could not be set")
@@ -102,6 +105,7 @@ class Servo:
     
     def set_duty_cycle(self, pwm, cycle):
         try:
+            
             pwm.ChangeDutyCycle(cycle)
             
             
@@ -112,9 +116,10 @@ class Servo:
         """
         returns duty cycle from given angle
         """
-        return float(angle) / 10.0 + 2.5
+        return float(angle) / 10.0 + 4.5
     
     def move_UD(self, angle):
+        self.PWM_UD.start(self.CURRENT_UD)
         pwm = self.countAngle(angle)
         if pwm >= self.MAX_DOWN and pwm <= self.MAX_UP:
             self.set_duty_cycle(self._UD_, pwm)
@@ -122,9 +127,11 @@ class Servo:
         else:
             self.set_duty_cycle(self._UD_, self.NEUTRAL_Y)
             self.CURRENT_UD = self.NEUTRAL_Y
-        
+        sleep(1)
+        self.PWM_UD.stop()
     
     def move_LR(self, angle):
+        self.PWM_LR.start(self.CURRENT_UD)
         pwm = self.countAngle(angle)
         if pwm >= self.MAX_LEFT and pwm <= self.MAX_RIGHT:
             self.set_duty_cycle(self._LR_, pwm)
@@ -132,7 +139,10 @@ class Servo:
         else:
             self.set_duty_cycle(self._LR_, self.NEUTRAL_X)
             self.CURRENT_LR = self.NEUTRAL_X
+        sleep(1)
+        self.PWM_LR.stop()
     def transit_U(self):
+        self.PWM_UD.start(self.CURRENT_UD)
         pwm = self.CURRENT_UD + 0.5
         if pwm >= self.MAX_DOWN and pwm <= self.MAX_UP:
             self.set_duty_cycle(self._UD_, pwm)
@@ -140,7 +150,10 @@ class Servo:
         else:
             self.set_duty_cycle(self._UD_, self.NEUTRAL_Y)
             self.CURRENT_UD = self.NEUTRAL_Y
+        sleep(1)
+        self.PWM_UD.stop()
     def transit_D(self):
+        self.PWM_UD.start(self.CURRENT_UD)
         pwm = self.CURRENT_UD - 0.5
         if pwm >= self.MAX_DOWN and pwm <= self.MAX_UP:
             self.set_duty_cycle(self._UD_, pwm)
@@ -148,7 +161,10 @@ class Servo:
         else:
             self.set_duty_cycle(self._UD_, self.NEUTRAL_Y)
             self.CURRENT_UD = self.NEUTRAL_Y
+        sleep(1)
+        self.PWM_UD.stop()
     def transit_R(self):
+        self.PWM_LR.start(self.CURRENT_LR)
         pwm = self.CURRENT_LR + 0.5
         if pwm >= self.MAX_LEFT and pwm <= self.MAX_RIGHT:
             self.set_duty_cycle(self._LR_, pwm)
@@ -156,7 +172,10 @@ class Servo:
         else:
             self.set_duty_cycle(self._LR_, self.NEUTRAL_X)
             self.CURRENT_LR = self.NEUTRAL_X
+        sleep(1)
+        self.PWM_LR.stop()
     def transit_L(self):
+        self.PWM_LR.start(self.CURRENT_LR)
         pwm = self.CURRENT_LR - 0.5
         if pwm >= self.MAX_LEFT and pwm <= self.MAX_RIGHT:
             self.set_duty_cycle(self._LR_, pwm)
@@ -164,6 +183,8 @@ class Servo:
         else:
             self.set_duty_cycle(self._LR_, self.NEUTRAL_X)
             self.CURRENT_LR = self.NEUTRAL_X
+        sleep(1)
+        self.PWM_LR.stop()
     
                         
     def move_up(self, angle):

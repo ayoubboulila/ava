@@ -9,6 +9,7 @@ import redis
 from datetime import datetime
 import json
 import time
+from time import sleep
 import Logger
 
 
@@ -113,6 +114,7 @@ def main():
                 log.debug("MainAUC: received data:")
                 log.debug(data)
                 execute_action(data, broker)
+            sleep(0.2)
                 
                 
     except Exception as ex:

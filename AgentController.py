@@ -9,6 +9,7 @@ import sys, os
 import signal
 import redis
 import Logger
+from time import sleep
 
 
 TTSC_CH = 'TTSC'
@@ -79,6 +80,8 @@ def execute_action(action, broker):
         snowboydecoder.play_audio_file(snowboydecoder.DETECT_DONG)
         json = '{"action": "speak",  "sentence": " ok sure master"}'
         broker.publish(TTSC_CH, json)
+    
+    
 
 
 
@@ -105,7 +108,7 @@ def main():
         # make sure you have the same numbers of callbacks and models
         detector.start(detected_callback=callbacks,
                        interrupt_check=interrupt_callback,
-                       sleep_time=0.03)
+                       sleep_time=0.07)
 
         detector.terminate()
         

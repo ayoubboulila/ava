@@ -73,6 +73,7 @@ def main():
                     log.error("servos were not initialized not performing action!")
             else:
                 background_job(us, broker)
+            time.sleep(0.5)
         
     except Exception as ex:
         log.error("exception in USController")
