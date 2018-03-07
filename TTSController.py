@@ -31,7 +31,7 @@ class TTS:
         
     
     def build_args(self):
-        args = [self._BIN_, '-voice', self._VOICE_, '--setf', 'duration_stretch=1.5' , '-t']
+        args = [self._BIN_, '-voice', self._VOICE_, '--setf', 'duration_stretch=1' , '-t']
         return args    
         
     def speak(self, sentence):

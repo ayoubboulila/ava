@@ -51,7 +51,7 @@ def execute_action(data, broker):
                 if data['action'] == 'mesure':
                     left_dist = data['distance']
                     break
-        com6 = '{"action": "moveX",  "angle": "180"}'
+        com6 = '{"action": "moveX",  "angle": "50"}'
         broker.publish(SC_CH, com6)
         time.sleep(0.1)
         com7 = '{"action": "mesure", "distance": "0"}'
