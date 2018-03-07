@@ -120,6 +120,8 @@ $scope.onSlideEnd = function onSlideEnd(value) {
   .controller('cameraCtl', ['$scope', '$http', function($scope, $http) {
 	  
 	  
+	  $scope.vid ='https://www.youtube.com/embed/zBIdZ6TMyMk';
+	  
 	  $scope.servo_up = function(){
 		  
 		  console.log("servo_up");
@@ -223,4 +225,29 @@ $scope.onSlideEnd = function onSlideEnd(value) {
  
 	  
 
+  }])
+  . controller('speechCtrl', ['$scope', '$http', function($scope, $http) {
+	  
+	  $scope.speech="";
+	  
+	  $scope.speak = function(){
+		  
+		  console.log("speak");
+		  console.log($scope.speech);
+		  
+		  $http({
+	        method:'POST',
+	        url:URL + '/tts/speak',
+	        headers: {
+	           'Content-Type': 'application/json;charset=utf-8'
+	        },
+	        data:{"sentence": $scope.speech}
+	    })
+	    .then(function(resp){
+	        console.log(resp);
+	    },function(error){
+	        console.log(error);
+	    });
+	}	
+	  
   }]);

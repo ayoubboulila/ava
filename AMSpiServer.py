@@ -219,6 +219,26 @@ def servo_init():
         return "NOTOK"
 
 
+
+@app.route('/tts/speak', methods=['POST'])
+def speak():
+    print("speak api")
+    
+    try:
+        sentence = ""
+        data = js.loads(request.data.decode('utf-8'))
+        if data['sentence']:
+            sentence = data['sentence']
+            print(sentence)
+        json = '{"action": "speak",  "sentence": "' + str(sentence) + '"}'
+        r.publish('TTSC', json)
+        return "OK"
+    except Exception as ex:
+        log.error("exception in speak")
+        log.error(ex, exc_info=True)
+        return "NOTOK"
+
+
 @app.context_processor
 def inject_user():
     return dict(URL=config.URL)
