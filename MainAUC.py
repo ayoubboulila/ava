@@ -10,7 +10,7 @@ from datetime import datetime
 import json
 import time
 from time import sleep
-import Logger
+from utils import Logger
 
 
 SC_CH = 'SC'

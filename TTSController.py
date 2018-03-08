@@ -8,7 +8,7 @@ Created on 2 mars 2018
 import sys, os
 import signal
 import redis
-import Logger
+from utils import Logger
 import subprocess
 import json
 from time import sleep

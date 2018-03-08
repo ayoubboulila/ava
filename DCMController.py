@@ -10,10 +10,10 @@ from datetime import datetime
 import json
 #from pprint import pprint
 import ast
-from AMSpi import AMSpi
+from lib.mvt.AMSpi import AMSpi
 import time
 from time import sleep
-import Logger
+from utils import Logger
 
 DCM_CH = 'DCMC'
 log = Logger.RCLog('DCMController')

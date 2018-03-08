@@ -5,11 +5,11 @@ Created on 30 janv. 2018
 '''
 from flask import Flask, flash, redirect, render_template, request, session, abort
 import jinja2
-from AMSpi import AMSpi
+from lib.mvt.AMSpi import AMSpi
 import time
 import config
 import redis
-import Logger
+from utils import Logger
 import logging
 from logging.handlers import RotatingFileHandler
 import json as js

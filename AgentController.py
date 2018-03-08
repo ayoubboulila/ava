@@ -8,7 +8,7 @@ from lib.agent import snowboydecoder
 import sys, os
 import signal
 import redis
-import Logger
+from utils import Logger
 from time import sleep
 
 

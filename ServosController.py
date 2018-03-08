@@ -10,8 +10,8 @@ import json
 import ast
 import time
 from time import sleep
-import Logger
-from servo import Servo
+from utils import Logger
+from lib.mvt.servo import Servo
 
 SC_CH = 'SC'
 log = Logger.RCLog('ServosController')

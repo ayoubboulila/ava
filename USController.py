@@ -8,8 +8,8 @@ import redis
 from datetime import datetime
 import json
 import time
-import Logger
-from DSensor import DSensor
+from utils import Logger
+from lib.mvt.DSensor import DSensor
 
 # both pub and sub
 US_CH = 'US'

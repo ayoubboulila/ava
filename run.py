@@ -11,7 +11,7 @@ import signal
 from time import sleep
 import sys
 import os
-import Logger
+from utils import Logger
 import DCMController, AMSpiServer, ServosController, USController, MainAUC, AgentController, TTSController
 import redis
 
