@@ -13,6 +13,7 @@ from time import sleep
 
 
 TTSC_CH = 'TTSC'
+DCM_CH = 'DCMC'
 interrupted = False
 log = Logger.RCLog('AgentController')
 RES_PATH = os.path.join(os.path.dirname(__file__),'lib', 'agent', 'resources')
@@ -52,22 +53,32 @@ def execute_action(action, broker):
         snowboydecoder.play_audio_file(snowboydecoder.DETECT_DONG)
         json = '{"action": "speak",  "sentence": " ok stopping"}'
         broker.publish(TTSC_CH, json)
+        act = '{"action": "stop",  "speed": "0", "time_limit": "0"}'
+        broker.publish(DCM_CH, act)
     elif action == 'ava_go':
         snowboydecoder.play_audio_file(snowboydecoder.DETECT_DONG)
         json = '{"action": "speak",  "sentence": " ok going forward"}'
         broker.publish(TTSC_CH, json)
+        act = '{"action": "go",  "speed": "0", "time_limit": "0"}'
+        broker.publish(DCM_CH, act)
     elif action == 'ava_back':
         snowboydecoder.play_audio_file(snowboydecoder.DETECT_DONG)
         json = '{"action": "speak",  "sentence": " ok going backward"}'
         broker.publish(TTSC_CH, json)
+        act = '{"action": "back",  "speed": "60", "time_limit": "0"}'
+        broker.publish(DCM_CH, act)
     elif action == 'ava_turn_left':
         snowboydecoder.play_audio_file(snowboydecoder.DETECT_DONG)
         json = '{"action": "speak",  "sentence": " ok turning left"}'
         broker.publish(TTSC_CH, json)
+        act = '{"action": "left",  "speed": "50", "time_limit": "0.5"}'
+        broker.publish(DCM_CH, act)
     elif action == 'ava_turn_right':
         snowboydecoder.play_audio_file(snowboydecoder.DETECT_DONG)
         json = '{"action": "speak",  "sentence": " ok turning right"}'
         broker.publish(TTSC_CH, json)
+        act = '{"action": "right",  "speed": "50", "time_limit": "0.5"}'
+        broker.publish(DCM_CH, act)
     elif action == 'ava_who_are_you':
         snowboydecoder.play_audio_file(snowboydecoder.DETECT_DONG)
         json = '{"action": "speak",  "sentence": " well, my name is ava, i am an artificial virtual assistant, i was created by a young software architect who got inspired by the ex machina movie, so he gave me the name of its main humanoid character"}'
