@@ -10,6 +10,7 @@ from time import sleep
 
 
 ava = AVA()
+ava.test(ava.CONFIG.AVA_STANDBY_ANIME)
 ava.set_motion(ava.CONFIG.AVA_STANDBY_ANIME)
 sleep(5)
 ava.set_motion(ava.CONFIG.AVA_TALK_ANIME)

@@ -204,14 +204,14 @@ class Head(QtGui.QMainWindow):
             if i == 200000:
                 print("next:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::")
                 self.mediaplayer.pause()
-                #self.media = self.instance.media_new(config.AVA_TALK_ANIME)
-                self.mediaplayer.set_mrl(config.AVA_TALK_ANIME)
+                #self.media = self.instance.media_new(self.CONFIG.AVA_TALK_ANIME)
+                self.mediaplayer.set_mrl(self.CONFIG.AVA_TALK_ANIME)
                 self.mediaplayer.play()
             #===================================================================
             if i == 400000:
                 print("next:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::")
                 self.mediaplayer.pause()
-                #self.media = self.instance.media_new(config.AVA_TALK_ANIME)
+                #self.media = self.instance.media_new(self.CONFIG.AVA_TALK_ANIME)
                 self.mediaplayer.set_mrl(anime)
                 self.mediaplayer.play()
     
@@ -242,6 +242,8 @@ class AVA():
         
     def set_motion(self, motion):
         self.head.set_motion(motion)
+    def test(self, motion):
+        self.head.test(motion)
 
 if __name__ == "__main__":
     ava = AVA()
