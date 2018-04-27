@@ -225,11 +225,9 @@ class Head(QtGui.QMainWindow):
         elif sys.platform == "darwin": # for MacOS
             self.mediaplayer.set_nsobject(self.videoframe.winId())
         self.mediaplayer.play()
-        while True:
-            state = self.mediaplayer.get_state()
-            print(state)
-            QtCore.QCoreApplication.processEvents()
         
+    def process_events(self):
+            QtCore.QCoreApplication.processEvents()
         
                 
                 
@@ -242,6 +240,14 @@ class AVA():
         
     def set_motion(self, motion):
         self.head.set_motion(motion)
+    def process_events(self):
+        self.head.process_events()
+        #=======================================================================
+        # while True:
+        #     state = self.head.mediaplayer.get_state()
+        #     #print(state)
+        #     QtCore.QCoreApplication.processEvents()
+        #=======================================================================
 
 if __name__ == "__main__":
     ava = AVA()
