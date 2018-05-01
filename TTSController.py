@@ -18,6 +18,7 @@ from time import sleep
 
 log = Logger.RCLog('TTSController')
 TTSC_CH = 'TTSC'
+HC_CH = 'HC'
 
 class TTS:
     _BIN_ = '/home/pi/builded_backup/mimic/mimic'
@@ -57,7 +58,9 @@ def main():
                 log.debug(data)
                 action = data['action']
                 sentence = data['sentence']
+                broker.publish(HC_CH, '{"action": "play",  "anime": "talk"}')
                 tts.speak(sentence)
+                broker.publish(HC_CH, '{"action": "play",  "anime": "standby"}')
             sleep(0.4)
                 
     except Exception as ex:
