@@ -71,13 +71,13 @@ def execute_action(action, broker):
         snowboydecoder.play_audio_file(snowboydecoder.DETECT_DONG)
         json = '{"action": "speak",  "sentence": " ok turning left"}'
         broker.publish(TTSC_CH, json)
-        act = '{"action": "left",  "speed": "50", "time_limit": "0.5"}'
+        act = '{"action": "left",  "speed": "50", "time_limit": "1"}'
         broker.publish(DCM_CH, act)
     elif action == 'ava_turn_right':
         snowboydecoder.play_audio_file(snowboydecoder.DETECT_DONG)
         json = '{"action": "speak",  "sentence": " ok turning right"}'
         broker.publish(TTSC_CH, json)
-        act = '{"action": "right",  "speed": "50", "time_limit": "0.5"}'
+        act = '{"action": "right",  "speed": "50", "time_limit": "1.5"}'
         broker.publish(DCM_CH, act)
     elif action == 'ava_who_are_you':
         snowboydecoder.play_audio_file(snowboydecoder.DETECT_DONG)

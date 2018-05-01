@@ -120,7 +120,7 @@ $scope.onSlideEnd = function onSlideEnd(value) {
   .controller('cameraCtl', ['$scope', '$http', function($scope, $http) {
 	  
 	  
-	  $scope.vid ='https://www.youtube.com/embed/zBIdZ6TMyMk';
+	  $scope.vid = "http://192.168.43.154/cam/min.php";
 	  
 	  $scope.servo_up = function(){
 		  

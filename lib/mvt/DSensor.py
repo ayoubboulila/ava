@@ -26,7 +26,7 @@ class DSensor:
     
     '''
     # Trigger
-    _TRG_ = 9
+    _TRG_ = 26
     
     # Echo
     _ECHO_ = 11
@@ -38,7 +38,7 @@ class DSensor:
     _STOP_DIST_ = 15
     
     
-    def __init__(self, TRG_=9, ECHO_=11, use_board=False):
+    def __init__(self, TRG_=26, ECHO_=11, use_board=False):
         """
         Initialize function for servo class
 
@@ -111,6 +111,7 @@ class DSensor:
     
     def get_status(self):
         d = self.get_distance()
+        print('distance: '+ str(d))
         if d < self._WARN_DIST_:
             print("every thing is fine")
         elif (d >= self._WARN_DIST_ and d < self._STOP_DIST_):

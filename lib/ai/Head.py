@@ -26,7 +26,7 @@ Created on 5 avr. 2018
 
 import sys
 import os.path
-import vlc
+from lib.ai import vlc
 from PyQt4 import QtGui, QtCore
 from lib.ai.config  import Config
 from time import sleep
@@ -41,7 +41,7 @@ class Head(QtGui.QMainWindow):
         self.CONFIG= Config()
 
         # creating a basic vlc instance
-        self.instance = vlc.Instance('--input-repeat=999999')
+        self.instance = vlc.Instance('--input-repeat=999999 ') #--video-filter=transform --transform-type=270
         # creating an empty vlc media player
         self.mediaplayer = self.instance.media_player_new()
 
