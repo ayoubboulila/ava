@@ -16,6 +16,7 @@ sensor = DSensor()
 try:
     while True:
         sensor.get_status()
+        #sleep(2)
     
         
     
