@@ -11,7 +11,7 @@ BASE = os.path.dirname(__file__)
 RES_PATH = os.path.abspath(os.path.join(BASE, '..', '..', 'static', 'img', 'vid'))
 print(RES_PATH)
 AVA_STANDBY_ANIME = os.path.join(RES_PATH, 'standby__.avi')
-AVA_TALK_ANIME = os.path.join(RES_PATH, 'talking__.avi')
+AVA_TALK_ANIME = os.path.join(RES_PATH, 'talking__2.avi')
 
 print(AVA_STANDBY_ANIME)
 
