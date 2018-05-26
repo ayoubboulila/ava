@@ -30,7 +30,7 @@ log = Logger.RCLog('USController')
 def execute_action(us, action, broker):
     if action == "mesure":
         d = us.get_distance()
-        data = '{"action": "mesure", "distance": "' + d + '"}'
+        data = '{"action": "mesure", "distance": "' + str(d) + '"}'
         broker.publish(MAUC_CH, data)
         
     elif action == "exit":
@@ -43,11 +43,11 @@ def background_job(us, broker):
         pass
     elif (d <= us._WARN_DIST_ and d > us._STOP_DIST_):
         log.debug('US Warning: getting close')
-        data = '{"action": "slowdown", "distance": "' + d + '"}'
+        data = '{"action": "slowdown", "distance": "' + str(d) + '"}'
         broker.publish(MAUC_CH, data)
     elif d <= us._STOP_DIST_:
         log.debug('US Danger: going to crash')
-        data = '{"action": "stopandturn", "distance": "' + d + '"}'
+        data = '{"action": "stopandturn", "distance": "' + str(d) + '"}'
         broker.publish(MAUC_CH, data)
     time.sleep(0.5)
 

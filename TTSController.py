@@ -47,8 +47,10 @@ class TTS:
     def speak(self, sentence, broker=None):
         self.hash = self.generate_hash(sentence)
         mimic_file = os.path.join(self._TEMP_DIR, self.hash)
-        command = self.build_args() + [sentence, '-o', self.hash] 
+        command = self.build_args() + [sentence, '-o', mimic_file] 
         if not os.path.exists(mimic_file):
+            print("command")
+            print(command)
             subprocess.check_output(command)
         
         #subprocess.check_output(['aplay', mimic_file])
@@ -59,7 +61,7 @@ class TTS:
             chunk = wave_data.readframes(frame_count)
             return (chunk, pyaudio.paContinue)
         #open stream using callback
-        stream = audio.open(format=audio.get_get_format_from_width(wave_data.getsampwidth()),
+        stream = audio.open(format=audio.get_format_from_width(wave_data.getsampwidth()),
                             channels=wave_data.getnchannels(),
                             rate=wave_data.getframerate(),
                             output=True,
@@ -83,7 +85,7 @@ class TTS:
         
     
     def generate_hash(self, sentence):
-        hash_obj = hashlib.sha256(sentence)
+        hash_obj = hashlib.sha256(sentence.encode('utf-8'))
         hex_digest = hash_obj.hexdigest()
         return hex_digest
     
