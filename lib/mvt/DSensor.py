@@ -112,9 +112,9 @@ class DSensor:
     def get_status(self):
         d = self.get_distance()
         print('distance: '+ str(d))
-        if d < self._WARN_DIST_:
+        if d > self._WARN_DIST_:
             print("every thing is fine")
-        elif (d >= self._WARN_DIST_ and d < self._STOP_DIST_):
+        elif (d < self._WARN_DIST_ and d > self._STOP_DIST_):
             print("warning distance, slow down")
         else:
             print("danger, stop right now")
