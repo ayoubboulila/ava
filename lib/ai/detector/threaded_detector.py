@@ -5,6 +5,8 @@ Created on 18 oct. 2019
 '''
 import argparse
 import cv2
+import sys 
+sys.path.append("/home/pi/ava")
 from lib.cam.camera_threaded.CountsPerSec import CountsPerSec
 from lib.cam.camera_threaded.VideoGet import VideoGet
 from lib.cam.camera_threaded.VideoShow import VideoShow
@@ -40,3 +42,6 @@ def CameraThreads(source=0):
         frame = putIterationsPerSec(frame, cps.countsPerSec())
         video_shower.frame = frame
         cps.increment()
+
+if __name__ == "__main__":
+    CameraThreads()
