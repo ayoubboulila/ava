@@ -54,7 +54,7 @@ def detect(predictor, image):
         cv2.putText(image, '{}: {:.2f}'.format(obj[3], obj[2]),
                         (obj[0][0], obj[0][1] - 5),
                         cv2.FONT_HERSHEY_PLAIN, 1, (0, 255, 0), 2)
-    return result
+    return image
 
 def CameraThreads(predictor, source=0):
     """
