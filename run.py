@@ -14,6 +14,7 @@ import os
 from utils import Logger
 import DCMController, AMSpiServer, ServosController, USController, MainAUC, AgentController, TTSController, HeadController
 import redis
+import DetectionController
 
 log = Logger.RCLog('MainAUC')
 class MyManager(SyncManager):
@@ -43,6 +44,9 @@ def run_TTSController():
     
 def run_HeadController():
     HeadController.main()
+
+def run_DetectionController():
+    DetectionController.main()
 
 if __name__ == '__main__':
     # Save a reference to the original signal handler for SIGINT.
@@ -98,10 +102,16 @@ if __name__ == '__main__':
     processes.append(ttsc_process)
     sleep(0.6)
     #-----------------------
-    head_process = multiprocessing.Process(target=run_HeadController)
-    head_process.daemon = True
-    head_process.start()
-    processes.append(head_process)
+#    head_process = multiprocessing.Process(target=run_HeadController)
+#    head_process.daemon = True
+#    head_process.start()
+#    processes.append(head_process)
+#    sleep(0.6)
+    #------------------------
+    detection_process = multiprocessing.Process(target=run_DetectionController)
+    detection_process.daemon = True
+    detection_process.start()
+    processes.append(detection_process)
     sleep(0.6)
     #===========================================================================
     # cam_process = multiprocessing.Process(target=cam_loop,args=(in_queue, ))
