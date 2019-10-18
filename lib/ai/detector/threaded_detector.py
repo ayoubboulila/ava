@@ -67,19 +67,33 @@ def CameraThreads(predictor, source=0):
     video_getter = VideoGet(source).start()
     video_shower = VideoShow(video_getter.frame).start()
     cps = CountsPerSec().start()
-#    fps = FPS().start()
+    fps = FPS().start()
+    frame_rate_calc = 1
+    freq = cv2.getTickFrequency()
 
     while True:
+        t1 = cv2.getTickCount()
         if video_getter.stopped or video_shower.stopped:
             video_shower.stop()
             video_getter.stop()
             break
-
         frame = video_getter.frame
-        frame = putIterationsPerSec(frame, cps.countsPerSec())
+        logger.info("FPS: {0:.2f}".format(frame_rate_calc))
+        cv2.putText(frame, "FPS: {0:.2f}".format(frame_rate_calc), (20, 20),
+                    cv2.FONT_HERSHEY_PLAIN, 1, (255, 255, 0), 2, cv2.LINE_AA)
+
+        
+#        frame = putIterationsPerSec(frame, cps.countsPerSec())
         out_frame = detect(predictor, frame)
         video_shower.frame = out_frame
-        cps.increment()
+        t2 = cv2.getTickCount()
+        time1 = (t2 - t1) / freq
+        frame_rate_calc = 1 / time1
+#        logger.info('approx. FPS: {:.2f}'.format(fps.fps()))
+        fps.update()
+#        cps.increment()
+    fps.stop()
+
 
 
 
