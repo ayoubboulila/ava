@@ -3,8 +3,8 @@ from os import path
 import numpy as np
 import tensorflow as tf
 
-from utils import label_map_util
-from object_detector import ObjectDetector
+from lib.ai.detector.utils import label_map_util
+from lib.ai.detector.object_detector import ObjectDetector
 
 
 basepath = path.dirname(__file__)

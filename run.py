@@ -108,11 +108,11 @@ if __name__ == '__main__':
 #    processes.append(head_process)
 #    sleep(0.6)
     #------------------------
-    detection_process = multiprocessing.Process(target=run_DetectionController)
-    detection_process.daemon = True
-    detection_process.start()
-    processes.append(detection_process)
-    sleep(0.6)
+#    detection_process = multiprocessing.Process(target=run_DetectionController)
+#    detection_process.daemon = True
+#    detection_process.start()
+#    processes.append(detection_process)
+#    sleep(0.6)
     #===========================================================================
     # cam_process = multiprocessing.Process(target=cam_loop,args=(in_queue, ))
     # cam_process.daemon = True

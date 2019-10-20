@@ -26,23 +26,22 @@ class Servo:
     
     """
     # UP/DOWN servo control pin
-    _UD_ = 13
+    _UD_ = 19
     # RIGHT/LEFT servo control pin
-    _LR_ = 19
-    
+    _LR_ = 13
     FREQ = 50
     PWM_UD = None
     PWM_LR = None
-    MAX_UP = 9.5      # 50 degree
-    MAX_DOWN = 4.5    # 0 degree
-    MAX_LEFT = 4.5    # 0 degree
+    MAX_UP = 7.5      # 50 degree
+    MAX_DOWN = 2.7    # 0 degree
+    MAX_LEFT = 2.5    # 0 degree
     MAX_RIGHT = 9.5   # 50 degree
-    NEUTRAL_Y = 7.5   # 30 degree
-    NEUTRAL_X = 7.5   # 30 degree
-    CURRENT_UD = 7.5
-    CURRENT_LR = 7.5
+    NEUTRAL_Y = 4   # 30 degree
+    NEUTRAL_X = 6   # 30 degree
+    CURRENT_UD = 4
+    CURRENT_LR = 6
     
-    def __init__(self, UD_=13, LR_=19, use_board=False):
+    def __init__(self, UD_=19, LR_=13, use_board=False):
         """
         Initialize function for servo class
 
@@ -116,7 +115,7 @@ class Servo:
         """
         returns duty cycle from given angle
         """
-        return float(angle) / 10.0 + 4.5
+        return float(angle) / 18.0 + 3.0
     
     def move_UD(self, angle):
         self.PWM_UD.start(self.CURRENT_UD)

@@ -2,13 +2,14 @@ import numpy as np
 import tensorflow as tf
 import cv2
 import os
-
-from object_detector_detection_api import ObjectDetectorDetectionAPI, \
+import sys
+sys.path.append("/home/pi/ava")
+from lib.ai.detector.object_detector_detection_api import ObjectDetectorDetectionAPI, \
     PATH_TO_LABELS, NUM_CLASSES
 
 
 class ObjectDetectorLite(ObjectDetectorDetectionAPI):
-    def __init__(self, model_path=os.path.join('models','detect.tflite')):
+    def __init__(self, model_path=os.path.join('/home','pi','ava','lib','ai','detector','models','detect.tflite')):
         """
             Builds Tensorflow graph, load model and labels
         """
