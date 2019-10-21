@@ -105,7 +105,7 @@ class DSensor:
         except Exception as ex:
             print("exception in get distance")
             traceback.print_exc()
-            return None
+            return -1
             
             
     
