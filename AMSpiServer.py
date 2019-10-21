@@ -3,7 +3,7 @@ Created on 30 janv. 2018
 
 @author: AYB
 '''
-from flask import Flask, flash, redirect, render_template, request, session, abort
+from flask import Flask, flash, redirect, render_template, request, session, abort, Response
 import jinja2
 from lib.mvt.AMSpi import AMSpi
 import time
@@ -13,6 +13,7 @@ from utils import Logger
 import logging
 from logging.handlers import RotatingFileHandler
 import json as js
+from DetectionStreamController import DestectionStream
 
 app = Flask(__name__)
 log = Logger.RCLog('AMSpiServer')
@@ -59,7 +60,10 @@ def index():
 
 
 
-
+@app.route("/stream")
+def stream():
+    mimetype = "multipart/x-mixed-replace; boundary=frame-boundary"
+    return Response(gen(), mimetype=mimetype)
 
 
 @app.route('/index/forward', methods=['POST'])
@@ -260,6 +264,19 @@ def main():
         json = '{"action": "exit",  "speed": "0", "time_limit": "0"}'
         r.publish('DCMC', json)
         #cont.clean_up()
+def gen():
+    """
+    Generator to continuously grab and yield frames from the Camera object.
+    """
+    ds = DestectionStream()
+    while True:
+        frame = ds.get_frame()
+        yield (b'--frame-boundary\r\nContent-Type: image/jpeg\r\n\r\n'
+                + bytearray(frame) + b'\r\n'
+        )
+        with app.app_context():
+            # Add nominal delay between frames to prevent performance issues.
+            time.sleep(0.1)
 
 if __name__ == "__main__":
     main()
