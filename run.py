@@ -6,6 +6,7 @@ Created on 19 FEB. 2018
 
 import multiprocessing
 from multiprocessing.managers import SyncManager
+from lib.light.Rgb import RGB
 from queue import PriorityQueue
 import signal
 from time import sleep
@@ -13,8 +14,13 @@ import sys
 import os
 from utils import Logger
 import DCMController, AMSpiServer, ServosController, USController, MainAUC, AgentController, TTSController, HeadController
-import redis
-import DetectionController
+#import redis
+#from utils.RedisClient import RedisClient
+#from utils import BrokerManager
+#from utils.Broker import BROKER
+from utils.RabbitCtl import BROKER
+#import threading
+#import DetectionController
 
 log = Logger.RCLog('MainAUC')
 class MyManager(SyncManager):
@@ -44,9 +50,11 @@ def run_TTSController():
     
 def run_HeadController():
     HeadController.main()
+# def run_BrokerManager():
+    # BrokerManager.run()
 
-def run_DetectionController():
-    DetectionController.main()
+#def run_DetectionController():
+#    DetectionController.main()
 
 if __name__ == '__main__':
     # Save a reference to the original signal handler for SIGINT.
@@ -54,6 +62,9 @@ if __name__ == '__main__':
     # Set signal handling of SIGINT to ignore mode.
     signal.signal(signal.SIGINT, signal.SIG_IGN)
     #multiprocessing.set_start_method('spawn')
+    # thread = threading.Thread(target=BrokerManager.run, args=())
+    # thread.daemon = True                         
+    # thread.start() 
     processes = []
     manager = MyManager()
     manager.start(mgr_init)
@@ -65,7 +76,7 @@ if __name__ == '__main__':
     dcmc_process.start()
     processes.append(dcmc_process)
     sleep(0.4)
-    #------------------------
+    #--------------------
     dsc_process = multiprocessing.Process(target=run_ServosController)
     dsc_process.daemon = True
     dsc_process.start()
@@ -137,12 +148,14 @@ if __name__ == '__main__':
     # restore default signal handling for the parent process. 
     signal.signal(signal.SIGINT, default_handler)
     try:
-        
+        RGB.get_instance().standby()
         for process in processes:
             process.join()
     except KeyboardInterrupt:
         log.error("AYB: caught KeyboardInterrupt, killing processes")
-        broker = redis.StrictRedis()
+        #broker = redis.StrictRedis()
+        #broker = RedisClient().conn
+        broker = BROKER()
         broker.publish('DCMC', '{"action": "exit",  "speed": "0", "time_limit": "0"}')
         broker.publish('SC', '{"action": "exit",  "angle": "-1"}')
         broker.publish('US', '{"action": "exit", "distance": "0"}')
@@ -151,4 +164,5 @@ if __name__ == '__main__':
             process.terminate()
         manager.shutdown() 
     finally:
-        manager.shutdown()    
+        manager.shutdown()
+        RGB.get_instance().clean_up()

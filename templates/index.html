@@ -12,7 +12,7 @@ console.log("ip address of server: "+URL);
 
 <div class="row " ng-controller="cameraCtl">
                         <!-- left column -->
-                         <div class="col-md-8">
+                         <div class="col-md-4">
                            
                             <div class="box box-warning">
                                 <div class="box-header">
@@ -32,70 +32,7 @@ console.log("ip address of server: "+URL);
                             </div>
                         </div>
                         
-                        
-                        <!-- right column -->
-                        <div class="col-md-4">
-                           
-                            <div class="box box-warning">
-                                <div class="box-header">
-                                    <h3 class="box-title">Camera Control</h3>
-                                </div>
-                                <div class="box-body">
-                                   
-										 <div class="btn-group-vertical">
-			<!--                      row 1     -->
-                                     <div style="margin-left: 33%;">
-                                     	<span></span>
-                                     	<a class="btn btn-app" style="background-color: #00c0ef; border-color: #00acd6; color: #fff;" ng-click="servo_up(); ">
-                                       		 <i class="fa fa-arrow-circle-up"></i> UP
-                                    	</a>
-                                    	
-                                    	<span></span>
-                                     
-                                     </div>
-<!--                                      row2 -->
-									<div>
-									
-										<a class="btn btn-app" style="background-color: #00c0ef; border-color: #00acd6; color: #fff;" ng-click="servo_left(); ">
-                                       		 <i class="fa fa-arrow-circle-left"></i> Left
-                                    	</a>
-                                     	<a class="btn btn-app" style="background-color: #db3939; border-color: #fff; color: #fff;" ng-click="servo_neutral(); "> 
-                                        		<i class="fa fa-arrows"></i> Neutral 
-                                     	</a> 
-                                    	<a class="btn btn-app" style="background-color: #00c0ef; border-color: #00acd6; color: #fff;" ng-click="servo_right(); ">
-                                       		 <i class="fa fa-arrow-circle-right"></i> Right
-                                    	</a>
-									
-									</div>
-<!-- 									row3 -->
-									<div style="margin-left: 33%;">
-										<a class="btn btn-app" style="background-color: #00c0ef; border-color: #00acd6; color: #fff;" ng-click="servo_down(); ">
-                                       		 <i class="fa fa-arrow-circle-down"></i> Down
-                                    	</a>
-									
-									</div>
-                                     
-                                     </div>
-
-
-                                </div>
-                            </div>
-                        </div>
-                        
-                        
-                        
-                        
-                    </div>   <!-- /.row -->
-
-
-
-
-
-
-
-
-<div class="row ">
-                        <!-- left column -->
+                          <!-- central column -->
                         <div class="col-md-4">
                             <!-- general form elements -->
                             <div class="box box-primary" ng-controller="mvtCtl">
@@ -192,8 +129,72 @@ console.log("ip address of server: "+URL);
 
                            
 
-                        </div><!--/.col (left) -->
+                        </div><!--/.col (center) -->
                         
+                        
+                        <!-- right column -->
+                        <div class="col-md-4">
+                           
+                            <div class="box box-warning">
+                                <div class="box-header">
+                                    <h3 class="box-title">Camera Control</h3>
+                                </div>
+                                <div class="box-body">
+                                   
+										 <div class="btn-group-vertical">
+			<!--                      row 1     -->
+                                     <div style="margin-left: 33%;">
+                                     	<span></span>
+                                     	<a class="btn btn-app" style="background-color: #00c0ef; border-color: #00acd6; color: #fff;" ng-click="servo_up(); ">
+                                       		 <i class="fa fa-arrow-circle-up"></i> UP
+                                    	</a>
+                                    	
+                                    	<span></span>
+                                     
+                                     </div>
+<!--                                      row2 -->
+									<div>
+									
+										<a class="btn btn-app" style="background-color: #00c0ef; border-color: #00acd6; color: #fff;" ng-click="servo_left(); ">
+                                       		 <i class="fa fa-arrow-circle-left"></i> Left
+                                    	</a>
+                                     	<a class="btn btn-app" style="background-color: #db3939; border-color: #fff; color: #fff;" ng-click="servo_neutral(); "> 
+                                        		<i class="fa fa-arrows"></i> Neutral 
+                                     	</a> 
+                                    	<a class="btn btn-app" style="background-color: #00c0ef; border-color: #00acd6; color: #fff;" ng-click="servo_right(); ">
+                                       		 <i class="fa fa-arrow-circle-right"></i> Right
+                                    	</a>
+									
+									</div>
+<!-- 									row3 -->
+									<div style="margin-left: 33%;">
+										<a class="btn btn-app" style="background-color: #00c0ef; border-color: #00acd6; color: #fff;" ng-click="servo_down(); ">
+                                       		 <i class="fa fa-arrow-circle-down"></i> Down
+                                    	</a>
+									
+									</div>
+                                     
+                                     </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        
+                        
+                    </div>   <!-- /.row -->
+
+
+
+
+
+
+
+
+<div class="row ">
+                       
                         
                         <!--  center col -->
                         

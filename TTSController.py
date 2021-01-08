@@ -7,21 +7,34 @@ Created on 2 mars 2018
 
 import sys, os
 import signal
-import redis
+#import redis
+#from utils.RedisClient import RedisClient
+#from utils.Broker import BROKER
+from utils.RabbitCtl import BROKER
 from utils import Logger
+from lib.light.Rgb import RGB
 import subprocess
 import json
 from time import sleep
 import hashlib
 import pyaudio
 import wave
+from ctypes import *
 
 # json =  '{"action": "speak",  "sentence": ""}'
 
 log = Logger.RCLog('TTSController')
 TTSC_CH = 'TTSC'
 HC_CH = 'HC'
+# code to suppress pyaudio warnings
+ERROR_HANDLER_FUNC = CFUNCTYPE(None, c_char_p, c_int, c_char_p, c_int, c_char_p)
+def py_error_handler(filename, line, function, err, fmt):
+  pass
+c_error_handler = ERROR_HANDLER_FUNC(py_error_handler)
 
+asound = cdll.LoadLibrary('libasound.so')
+# Set error handler
+asound.snd_lib_error_set_handler(c_error_handler)
 class TTS:
     _BIN_ = '/home/pi/builded_backup/mimic/mimic'
     _VOICE_ = 'slt'
@@ -44,7 +57,7 @@ class TTS:
         args = [self._BIN_, '-voice', self._VOICE_, '--setf', 'duration_stretch=1', '-t']
         return args    
         
-    def speak(self, sentence, broker=None):
+    def speak(self, sentence):
         self.hash = self.generate_hash(sentence)
         mimic_file = os.path.join(self._TEMP_DIR, self.hash)
         command = self.build_args() + [sentence, '-o', mimic_file] 
@@ -55,32 +68,36 @@ class TTS:
         
         #subprocess.check_output(['aplay', mimic_file])
         wave_data = wave.open(mimic_file, 'rb')
+        #with noalsaerr():
         audio = pyaudio.PyAudio()
         #define callback
         def chunk_callback(in_data, frame_count, time_info, status):
             chunk = wave_data.readframes(frame_count)
             return (chunk, pyaudio.paContinue)
         #open stream using callback
+        #channels=wave_data.getnchannels()
         stream = audio.open(format=audio.get_format_from_width(wave_data.getsampwidth()),
-                            channels=wave_data.getnchannels(),
+                            channels=1,
                             rate=wave_data.getframerate(),
                             output=True,
                             stream_callback=chunk_callback)
         #start the stream
-        if broker != None:
-            broker.publish(HC_CH, '{"action": "play",  "anime": "talk"}')
+        # if broker != None:
+        # broker.publish(HC_CH, '{"action": "play",  "anime": "talk"}')
+        RGB.get_instance().set_color("w")
         stream.start_stream()
         #wait for the stream to finish
         while stream.is_active():
             sleep(0.1)
         #stop stream
         stream.stop_stream()
-        if broker != None:
-            broker.publish(HC_CH, '{"action": "play",  "anime": "standby"}')
+        # if broker != None:
+            # broker.publish(HC_CH, '{"action": "play",  "anime": "standby"}')
         stream.close()
         wave_data.close()
         #close Pyaudio
         audio.terminate()
+        RGB.get_instance().standby()
             
         
     
@@ -91,29 +108,43 @@ class TTS:
     
     
 
-
+def callback(ch, method, properties, message):
+    tts = TTS()
+    log.debug("callback received message: ".format(message.decode('utf-8')))
+    data = json.loads(message.decode('utf-8'))
+    log.debug("TTSC: received data:")
+    log.debug(data)
+    action = data['action']
+    sentence = data['sentence']
+    #broker.publish(HC_CH, '{"action": "play",  "anime": "talk"}')
+    tts.speak(sentence)
+    #broker.publish(HC_CH, '{"action": "play",  "anime": "standby"}')
+    sleep(0.4)
 
 
 
 def main():
     try:
-        broker = redis.StrictRedis()
-        sub = broker.pubsub()
-        sub.subscribe(TTSC_CH)
-        tts = TTS()
-        while True:
-            message = sub.get_message()
-            if message and not isinstance(message['data'], int) and message['type'] == 'message':
-                log.debug(type(message['data']))
-                data = json.loads(message['data'].decode('utf-8'))
-                log.debug("TTSC: received data:")
-                log.debug(data)
-                action = data['action']
-                sentence = data['sentence']
-                #broker.publish(HC_CH, '{"action": "play",  "anime": "talk"}')
-                tts.speak(sentence, broker)
-                #broker.publish(HC_CH, '{"action": "play",  "anime": "standby"}')
-            sleep(0.4)
+        #broker = redis.StrictRedis()
+        #broker = RedisClient().conn
+        #sub = broker.pubsub()
+        #tts = TTS()
+        sub = BROKER()
+        sub.subscribe(callback,TTSC_CH)
+        
+        # while True:
+            # topic, message = sub.get_b()
+            # if message != None:
+                # log.debug(message)
+                # data = json.loads(message)
+                # log.debug("TTSC: received data:")
+                # log.debug(data)
+                # action = data['action']
+                # sentence = data['sentence']
+                # #broker.publish(HC_CH, '{"action": "play",  "anime": "talk"}')
+                # tts.speak(sentence, broker)
+                # #broker.publish(HC_CH, '{"action": "play",  "anime": "standby"}')
+            # sleep(0.4)
                 
     except Exception as ex:
         log.error("error in TTSController")

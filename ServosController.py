@@ -4,14 +4,17 @@ Created on 15 FEB. 2018
 @author: AYB
 '''
 
-import redis
+#import redis
+#from utils.RedisClient import RedisClient
+#from utils.Broker import BROKER
+from utils.RabbitCtl import BROKER
 from datetime import datetime
 import json
 import ast
 import time
 from time import sleep
 from utils import Logger
-from lib.mvt.servo import Servo
+from lib.mvt.Servo import SERVO
 
 SC_CH = 'SC'
 log = Logger.RCLog('ServosController')
@@ -31,25 +34,42 @@ def execute_action(servo, action, angle):
         
         # servo.move_UD
         # servo.move_LR
+        log.debug("ServoController execute action")
         if action == "moveX":
-            servo.move_UD(angle)
+            servo.tilt(angle)
         elif action == "moveY":
-            servo.move_LR(angle)
+            servo.pan(angle)
         elif action == "up":
-            servo.transit_U()
+            if angle == -1 and servo.current_pan() in range(-90, 80):
+                angle = servo.current_pan() + 10
+            else:
+                angle = servo.current_pan()
+            servo.pan(angle)
         elif action == "down":
-            servo.transit_D()
+            if angle == -1 and servo.current_pan() in range(-80, 90):
+                angle = servo.current_pan() - 10
+            else:
+                angle = servo.current_pan()
+            servo.pan(angle)
         elif action == "left":
-            servo.transit_L()
+            if angle == -1 and servo.current_tilt() in range(-90, 80):
+                angle = servo.current_tilt() + 10
+            else:
+                angle = servo.current_tilt()
+            servo.tilt(angle)
         elif action == "right":
-            servo.transit_R()
+            if angle == -1 and servo.current_tilt() in range(-80, 90):
+                angle = servo.current_tilt() - 10
+            else:
+                angle = servo.current_tilt()
+            servo.tilt(angle)
         elif action == 'exit':
             log.debug('exit: cleaning up used pins')
             servo.clean_up()
         else:
             # wrong angle go neutral
-            servo.move_UD(servo.NEUTRAL_Y)
-            servo.move_LR(servo.NEUTRAL_X)
+            servo.pan(0)
+            servo.tilt(25)
         
     except Exception as ex:
         log.error("exception in SC execute_action()")
@@ -57,34 +77,49 @@ def execute_action(servo, action, angle):
         servo.clean_up()
 
 
+def callback(ch, method, properties, message):
+    log.debug(message.decode('utf-8'))
+    data = json.loads(message.decode('utf-8'))
+    log.debug("SC: received data:")
+    log.debug(data)
+    action = data['action']
+    angle = int(data['angle'])
+    if not (sc is None):
+        execute_action(sc, action, angle)
+    else:
+        log.error("servos were not initialized not performing action!")
 
 
 
 def main():
-    broker = redis.StrictRedis()
-    sub = broker.pubsub()
-    sub.subscribe(SC_CH)
+    #broker = redis.StrictRedis()
+    #broker = RedisClient().conn
+    #sub = broker.pubsub()
+    global sc
 
     try:
         '''
         UP/DOWN servo => pin 13
         LEFT/RIGHT servo => pin 19
         '''
-        sc = Servo()
-        while True:
-            message = sub.get_message()
-            if message and not isinstance(message['data'], int) and message['type'] == 'message':
-                log.debug(type(message['data']))
-                data = json.loads(message['data'].decode('utf-8'))
-                log.debug("SC: received data:")
-                log.debug(data)
-                action = data['action']
-                angle = int(data['angle'])
-                if not (sc is None):
-                    execute_action(sc, action, angle)
-                else:
-                    log.error("servos were not initialized not performing action!")
-            sleep(0.2)
+        sub = BROKER()
+        
+        sc = SERVO()
+        sub.subscribe(callback,SC_CH)
+        # while True:
+            # topic, message = sub.get()
+            # if message != None:
+                # log.debug(message)
+                # data = json.loads(message)
+                # log.debug("SC: received data:")
+                # log.debug(data)
+                # action = data['action']
+                # angle = int(data['angle'])
+                # if not (sc is None):
+                    # execute_action(sc, action, angle)
+                # else:
+                    # log.error("servos were not initialized not performing action!")
+            # sleep(0.2)
             
     except Exception as ex:
         log.error("exception in ServosController")

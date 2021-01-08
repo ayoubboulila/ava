@@ -5,9 +5,13 @@ Created on 1 mars 2018
 '''
 
 from lib.agent import snowboydecoder
+from lib.light.Rgb import RGB
 import sys, os
 import signal
-import redis
+#import redis
+#from utils.RedisClient import RedisClient
+#from utils.Broker import BROKER
+from utils.RabbitCtl import BROKER
 from utils import Logger
 from time import sleep
 
@@ -46,51 +50,61 @@ def interrupt_callback():
 def execute_action(action, broker):
     log.debug('got action: '+ action)
     if action == 'ava': 
+        RGB.get_instance().set_color("m")
         snowboydecoder.play_audio_file(snowboydecoder.DETECT_DING)
         json = '{"action": "speak",  "sentence": " yes"}'
         broker.publish(TTSC_CH, json)
     elif action == 'ava_stop':
+        RGB.get_instance().set_color("m")
         snowboydecoder.play_audio_file(snowboydecoder.DETECT_DONG)
         json = '{"action": "speak",  "sentence": " ok stopping"}'
         broker.publish(TTSC_CH, json)
         act = '{"action": "stop",  "speed": "0", "time_limit": "0"}'
         broker.publish(DCM_CH, act)
     elif action == 'ava_go':
+        RGB.get_instance().set_color("m")
         snowboydecoder.play_audio_file(snowboydecoder.DETECT_DONG)
-        json = '{"action": "speak",  "sentence": " ok going forward"}'
+        json = '{"action": "speak",  "sentence": " ok scouting the area, lets go"}'
         broker.publish(TTSC_CH, json)
-        act = '{"action": "go",  "speed": "0", "time_limit": "0"}'
+        act = '{"action": "go",  "speed": "100", "time_limit": "0"}'
         broker.publish(DCM_CH, act)
     elif action == 'ava_back':
+        RGB.get_instance().set_color("m")
         snowboydecoder.play_audio_file(snowboydecoder.DETECT_DONG)
         json = '{"action": "speak",  "sentence": " ok going backward"}'
         broker.publish(TTSC_CH, json)
-        act = '{"action": "back",  "speed": "60", "time_limit": "0"}'
+        act = '{"action": "back",  "speed": "100", "time_limit": "0"}'
         broker.publish(DCM_CH, act)
     elif action == 'ava_turn_left':
+        RGB.get_instance().set_color("m")
         snowboydecoder.play_audio_file(snowboydecoder.DETECT_DONG)
         json = '{"action": "speak",  "sentence": " ok turning left"}'
         broker.publish(TTSC_CH, json)
         act = '{"action": "left",  "speed": "50", "time_limit": "1"}'
         broker.publish(DCM_CH, act)
     elif action == 'ava_turn_right':
+        RGB.get_instance().set_color("m")
         snowboydecoder.play_audio_file(snowboydecoder.DETECT_DONG)
         json = '{"action": "speak",  "sentence": " ok turning right"}'
         broker.publish(TTSC_CH, json)
         act = '{"action": "right",  "speed": "50", "time_limit": "1.5"}'
         broker.publish(DCM_CH, act)
     elif action == 'ava_who_are_you':
+        RGB.get_instance().set_color("m")
         snowboydecoder.play_audio_file(snowboydecoder.DETECT_DONG)
         json = '{"action": "speak",  "sentence": " well, my name is ava, i am an artificial virtual assistant, i was created by a young software architect who got inspired by the ex machina movie, so he gave me the name of its main humanoid character"}'
         broker.publish(TTSC_CH, json)
     elif action == 'ava_dance':
+        RGB.get_instance().set_color("m")
         snowboydecoder.play_audio_file(snowboydecoder.DETECT_DONG)
         json = '{"action": "speak",  "sentence": " wooho lets put some music"}'
         broker.publish(TTSC_CH, json)
     elif action == 'ava_follow_me':
+        RGB.get_instance().set_color("m")
         snowboydecoder.play_audio_file(snowboydecoder.DETECT_DONG)
         json = '{"action": "speak",  "sentence": " ok sure master"}'
         broker.publish(TTSC_CH, json)
+    RGB.get_instance().standby()
     
     
 
@@ -100,8 +114,9 @@ def main():
     try:
         # capture SIGINT signal, e.g., Ctrl+C
         signal.signal(signal.SIGINT, signal_handler)
-        broker = redis.StrictRedis()
-
+        #broker = redis.StrictRedis()
+        #broker = RedisClient().conn
+        broker = BROKER()
         sensitivity = [0.5]*len(models)
         detector = snowboydecoder.HotwordDetector(models, sensitivity=sensitivity)
         callbacks = [lambda: execute_action('ava', broker), 

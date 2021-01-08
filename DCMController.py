@@ -5,12 +5,16 @@ Created on 14 FEB. 2018
 '''
 
 
-import redis
+#import redis
+#from utils.RedisClient import RedisClient
+#from utils.Broker import BROKER
+from utils.RabbitCtl import BROKER
+from lib.light.Rgb import RGB
 from datetime import datetime
 import json
 #from pprint import pprint
 import ast
-from lib.mvt.AMSpi import AMSpi
+from lib.mvt.Dcm import DCM
 import time
 from time import sleep
 from utils import Logger
@@ -62,61 +66,86 @@ def execute_action(dcm, action, speed=100, time_limit=0):
         dcm.clean_up()
 
 def init_dc_motors():
-    ### ASM init
-    cont = AMSpi() 
     try:
-        # pin 12 -> D7 is set per default 
-        cont.set_74HC595_pins(21, 20, 16)
-        # Set PINs for controlling all 4 motors (GPIO numbering)
-        #amspi.set_L293D_pins(5, 6, 13, 19)
-        # PWM2A -> DC_MOTOR_1
-        # PWM2B -> DC_MOTOR_2
-        cont.set_L293D_pins(PWM2A=5, PWM2B=6)
+        
+        cont = DCM()
         return cont
     except Exception as ex:
-        log.error("exception setting 74HC595_pins or L293D_pins")
+        log.error("exception setting   L298N_pins")
         cont.clean_up()
         log.error(ex, exc_info=True)
         return None
     
+# def callback(client, userdata, msg):
+    # message = str(msg.payload)
+    # log.debug(type(message))
+    # data = json.loads(message.decode('utf-8'))
+    # log.debug("DCMC: received data:")
+    # log.debug(data)
+    # action = data['action']
+    # speed = int(data['speed'])
+    # time_limit = 0
+    # if 'time_limit' in data:
+        # time_limit = float(data['time_limit'])
+    # if not (dcm is None):            
+        # execute_action(dcm, action, speed, time_limit)
+    # else:
+        # log.error("dcm was not initialized not performing action!")
+
+def callback(ch, method, properties, message):
+    
+    log.debug(message.decode('utf-8'))
+    data = json.loads(message.decode('utf-8'))
+    log.debug("DCMC: received data:")
+    log.debug(data)
+    action = data['action']
+    speed = int(data['speed'])
+    time_limit = 0
+    if 'time_limit' in data:
+        time_limit = float(data['time_limit'])
+    if not (dcm is None):            
+        execute_action(dcm, action, speed, time_limit)
+    else:
+        log.error("dcm was not initialized not performing action!")
+
 
 
 def main():
-    broker = redis.StrictRedis()
-    sub = broker.pubsub()
-    sub.subscribe(DCM_CH)
+    #broker = redis.StrictRedis()
+    #broker = RedisClient().conn
+    #sub = broker.pubsub()
+    global dcm
+    sub = BROKER()
+    
+    
 
     try:
         dcm = init_dc_motors()
-        while True:
-            message = sub.get_message()
-            if message and not isinstance(message['data'], int) and message['type'] == 'message':
-                log.debug(type(message['data']))
-                data = json.loads(message['data'].decode('utf-8'))
-                log.debug("DCMC: received data:")
-                log.debug(data)
-                action = data['action']
-                speed = int(data['speed'])
-                time_limit = 0
-                if 'time_limit' in data:
-                    time_limit = float(data['time_limit'])
-                if not (dcm is None):            
-                    execute_action(dcm, action, speed, time_limit)
-                else:
-                    log.error("dcm was not initialized not performing action!")
-            sleep(0.2)
+        sub.subscribe(callback, DCM_CH)
+        # while True:
+            # #message = sub.get_message()
+            # topic, message = sub.get()
+            # if message != None:
+                # log.debug((message))
+                # data = json.loads(message)
+                # log.debug("DCMC: received data:")
+                # log.debug(data)
+                # action = data['action']
+                # speed = int(data['speed'])
+                # time_limit = 0
+                # if 'time_limit' in data:
+                    # time_limit = float(data['time_limit'])
+                # if not (dcm is None):            
+                    # execute_action(dcm, action, speed, time_limit)
+                # else:
+                    # log.error("dcm was not initialized not performing action!")
+            # sleep(0.2)
             
     except Exception as ex:
         log.error("exception in DCMController")
         log.error(ex, exc_info=True)
         dcm.clean_up()
 
-##while True:
-##    message = sub.get_message()
-##    if message:
-##        local_now = datetime.now()
-##        print("local now: {}".format(local_now))
-##        print("remote time: {}".format(message))
         
 
 if __name__ == "__main__":

@@ -5,49 +5,33 @@ Created on 30 janv. 2018
 '''
 from flask import Flask, flash, redirect, render_template, request, session, abort, Response
 import jinja2
-from lib.mvt.AMSpi import AMSpi
 import time
 import config
-import redis
+import threading
+import requests
+#import redis
+#from utils.RedisClient import RedisClient
 from utils import Logger
 import logging
 from logging.handlers import RotatingFileHandler
 import json as js
-from DetectionStreamController import DestectionStream
+# utils.Broker import BROKER
+from utils.RabbitCtl import BROKER
+from lib.ai.detector.ObjectDetector import Detector
+#from lib.ai.detector.detect_picamera import main as pc
+#from DetectionStreamController import DestectionStream
+#from flask_mqtt import Mqtt
+#import paho.mqtt.publish as publish 
 
 app = Flask(__name__)
 log = Logger.RCLog('AMSpiServer')
+
 
 my_loader = jinja2.ChoiceLoader([
     app.jinja_loader,
     jinja2.FileSystemLoader('templates'),
 ])
 app.jinja_loader = my_loader
-r = redis.StrictRedis()
-#===============================================================================
-# ### ASM init
-# cont = AMSpi() 
-# 
-# try:
-#     
-#     # pin 12 -> D7 is set per default 
-#     cont.set_74HC595_pins(21, 20, 16)
-#     
-#     # Set PINs for controlling all 4 motors (GPIO numbering)
-#     #amspi.set_L293D_pins(5, 6, 13, 19)
-#     
-#     # PWM2A -> DC_MOTOR_1
-#     # PWM2B -> DC_MOTOR_2
-#     
-#     cont.set_L293D_pins(PWM2A=5, PWM2B=6)
-# except Exception as ex:
-#     print("exception setting 74HC595_pins or L293D_pins")
-#     cont.clean_up()
-#     traceback.print_exc()
-#===============================================================================
-
-
-
 
 
 @app.route('/')
@@ -58,12 +42,12 @@ def index():
     return render_template(
         'index.html',**locals())
 
-
-
 @app.route("/stream")
 def stream():
-    mimetype = "multipart/x-mixed-replace; boundary=frame-boundary"
-    return Response(gen(), mimetype=mimetype)
+    mimetype = "multipart/x-mixed-replace; boundary=frame"
+    
+    #return "a"
+    return Response(dt.start_fast_detection(use_rabbit=True), mimetype=mimetype)
 
 
 @app.route('/index/forward', methods=['POST'])
@@ -83,10 +67,6 @@ def forward():
         log.error(ex, exc_info=True)
         return "NOTOK"
     
-    
-    
-    
-
 @app.route('/index/backword', methods=['POST'])
 def backword():
     print("backword")
@@ -161,7 +141,7 @@ def stop():
         log.error(ex, exc_info=True)
         return "NOTOK"
 
-@app.route('/index/servo/up', methods=['POST'])
+@app.route('/index/servo/down', methods=['POST'])
 def servo_up():
     print("servo up")
     try: 
@@ -173,7 +153,7 @@ def servo_up():
         log.error(ex, exc_info=True)
         return "NOTOK"
 
-@app.route('/index/servo/down', methods=['POST'])
+@app.route('/index/servo/up', methods=['POST'])
 def servo_down():
     print("servo down")
     try: 
@@ -185,7 +165,7 @@ def servo_down():
         log.error(ex, exc_info=True)
         return "NOTOK"
 
-@app.route('/index/servo/left', methods=['POST'])
+@app.route('/index/servo/right', methods=['POST'])
 def servo_left():
     print("servo left")
     try: 
@@ -198,7 +178,7 @@ def servo_left():
         return "NOTOK"
 
 
-@app.route('/index/servo/right', methods=['POST'])
+@app.route('/index/servo/left', methods=['POST'])
 def servo_right():
     print("servo right")
     try: 
@@ -235,6 +215,7 @@ def speak():
             sentence = data['sentence']
             print(sentence)
         json = '{"action": "speak",  "sentence": "' + str(sentence) + '"}'
+        log.debug("sending json: {}".format(json))
         r.publish('TTSC', json)
         return "OK"
     except Exception as ex:
@@ -247,9 +228,35 @@ def speak():
 def inject_user():
     return dict(URL=config.URL)
 
+def start_runner():
+    def start_loop():
+        not_started = True
+        time.sleep(3)
+        while not_started:
+            #log.debug('In start loop')
+            try:
+                r = requests.get('http://127.0.0.1:3000/stream')
+                if r.status_code == 200:
+                    log.debug('Stream Detection Server started, quiting start_loop')
+                    not_started = False
+                log.debug(r.status_code)
+            except Exception as ex:
+                log.debug('Stream Detection Server not yet started')
+                #log.error(ex, exc_info=True)
+            time.sleep(2)
 
+    #log.debug('Started stream check runner')
+    thread = threading.Thread(target=start_loop)
+    thread.start()
+def start_detector():
+    
+    dt.start_fast_detection(use_rabbit=True)
+    
 def main():
     try:
+        global r
+        global dt
+        r = BROKER()
         app.jinja_env.auto_reload = True
         app.config['TEMPLATES_AUTO_RELOAD'] = True
         handler = RotatingFileHandler('AMSpiServer.log', maxBytes=10000, backupCount=1)
@@ -257,26 +264,31 @@ def main():
         formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
         handler.setFormatter(formatter)
         app.logger.addHandler(handler)
-        app.run(debug=False, host='0.0.0.0')
+        start_runner()
+        dt = Detector(use_tft=True)
+        #thread = threading.Thread(target=start_detector)
+        #thread.start()
+        
+        app.run(debug=False, host='0.0.0.0', port='3000')
     except Exception as ex:
         log.error("Exception in Main flask server")
         log.error(ex, exc_info=True)
         json = '{"action": "exit",  "speed": "0", "time_limit": "0"}'
         r.publish('DCMC', json)
-        #cont.clean_up()
-def gen():
-    """
-    Generator to continuously grab and yield frames from the Camera object.
-    """
-    ds = DestectionStream()
-    while True:
-        frame = ds.get_frame()
-        yield (b'--frame-boundary\r\nContent-Type: image/jpeg\r\n\r\n'
-                + bytearray(frame) + b'\r\n'
-        )
-        with app.app_context():
-            # Add nominal delay between frames to prevent performance issues.
-            time.sleep(0.1)
+        
+# def gen():
+    # """
+    # Generator to continuously grab and yield frames from the Camera object.
+    # """
+    # ds = DestectionStream()
+    # while True:
+        # frame = ds.get_frame()
+        # yield (b'--frame-boundary\r\nContent-Type: image/jpeg\r\n\r\n'
+                # + bytearray(frame) + b'\r\n'
+        # )
+        # with app.app_context():
+            # # Add nominal delay between frames to prevent performance issues.
+            # time.sleep(0.1)
 
 if __name__ == "__main__":
     main()
