@@ -5,56 +5,38 @@ Created on 5 feb. 2018
 '''
 
 
-from servo import Servo
+from Servo import SERVO
 import traceback
 from time import sleep
 
-serv = Servo()
+s = SERVO()
 
 
 try:
     print("starting")
     print("UP/DOWN")
-    print("Neutral")
-    serv.set_duty_cycle(serv.PWM_UD, 7)
+    print("UP")
+    s.look_up()
     sleep(1)
-    print("move 30 LR")
-    serv.move_LR(30)
-    print("move 100 LR")
-    serv.move_LR(100)
-    print("180")
-    serv.set_duty_cycle(serv.PWM_UD, 8.5)
+    print("DOWN")
+    s.look_down()
     sleep(1)
-    
-    print("0")
-    serv.set_duty_cycle(serv.PWM_UD, 10.5)
-    sleep(1)
-    
     
     print("right/left")
-    print("Neutral")
-    serv.set_duty_cycle(serv.PWM_LR, 6)
+    print("left")
+    s.look_left()
     sleep(1)
-    
-    print("180")
-    serv.set_duty_cycle(serv.PWM_LR, 10)
+    print("right")
+    s.look_right()
     sleep(1)
-    
-    print("0")
-    serv.set_duty_cycle(serv.PWM_LR, 3)
-    sleep(1)
-    
     
     print("calibrating Neutral")
-    serv.set_duty_cycle(serv.PWM_UD, 8.5)
-    sleep(0.5)
-    serv.set_duty_cycle(serv.PWM_LR, 6)
-    sleep(0.5)
+    s.reset()
+    sleep(1)
+    
 except Exception as ex:
     print("exception in main")
     traceback.print_exc()
-    serv.clean_up()
+    s.clean_up()
 finally:
-    serv.stop()
-    sleep(3)
-    serv.clean_up()
+    s.clean_up()
